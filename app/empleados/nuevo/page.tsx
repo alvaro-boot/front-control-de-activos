@@ -28,21 +28,12 @@ export default function NuevoEmpleadoPage() {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<EmpleadoForm>();
-
-  const sedeId = watch('sedeId');
 
   useEffect(() => {
     loadData();
   }, []);
-
-  useEffect(() => {
-    if (sedeId) {
-      loadAreas(Number(sedeId));
-    }
-  }, [sedeId]);
 
   const loadData = async () => {
     try {
