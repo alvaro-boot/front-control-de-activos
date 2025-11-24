@@ -72,10 +72,11 @@ class ApiClient {
     return response.data;
   }
 
-  async register(data: any): Promise<LoginResponse> {
-    const response = await this.client.post<LoginResponse>('/auth/register', data);
-    return response.data;
-  }
+  // Registro público deshabilitado - Los usuarios deben ser creados por administradores
+  // async register(data: any): Promise<LoginResponse> {
+  //   const response = await this.client.post<LoginResponse>('/auth/register', data);
+  //   return response.data;
+  // }
 
   async refreshToken(refreshToken: string): Promise<{ accessToken: string }> {
     const response = await this.client.post<{ accessToken: string }>('/auth/refresh', {
@@ -205,6 +206,11 @@ class ApiClient {
     return response.data;
   }
 
+  async completarMantenimientoProgramado(id: number, data: any) {
+    const response = await this.client.post(`/mantenimientos-programados/${id}/completar`, data);
+    return response.data;
+  }
+
   // Empleados
   async getEmpleados(empresaId?: number) {
     const params = empresaId ? { empresaId } : {};
@@ -286,10 +292,52 @@ class ApiClient {
     return response.data;
   }
 
+  async getSede(id: number) {
+    const response = await this.client.get(`/sedes/${id}`);
+    return response.data;
+  }
+
+  async createSede(data: any) {
+    const response = await this.client.post('/sedes', data);
+    return response.data;
+  }
+
+  async updateSede(id: number, data: any) {
+    const response = await this.client.patch(`/sedes/${id}`, data);
+    return response.data;
+  }
+
+  async deleteSede(id: number) {
+    const response = await this.client.delete(`/sedes/${id}`);
+    return response.data;
+  }
+
   // Áreas
-  async getAreas(sedeId?: number) {
-    const params = sedeId ? { sedeId } : {};
+  async getAreas(sedeId?: number, empresaId?: number) {
+    const params: any = {};
+    if (sedeId) params.sedeId = sedeId;
+    if (empresaId) params.empresaId = empresaId;
     const response = await this.client.get('/areas', { params });
+    return response.data;
+  }
+
+  async getArea(id: number) {
+    const response = await this.client.get(`/areas/${id}`);
+    return response.data;
+  }
+
+  async createArea(data: any) {
+    const response = await this.client.post('/areas', data);
+    return response.data;
+  }
+
+  async updateArea(id: number, data: any) {
+    const response = await this.client.patch(`/areas/${id}`, data);
+    return response.data;
+  }
+
+  async deleteArea(id: number) {
+    const response = await this.client.delete(`/areas/${id}`);
     return response.data;
   }
 
@@ -297,6 +345,26 @@ class ApiClient {
   async getCategorias(empresaId?: number) {
     const params = empresaId ? { empresaId } : {};
     const response = await this.client.get('/categorias', { params });
+    return response.data;
+  }
+
+  async getCategoria(id: number) {
+    const response = await this.client.get(`/categorias/${id}`);
+    return response.data;
+  }
+
+  async createCategoria(data: any) {
+    const response = await this.client.post('/categorias', data);
+    return response.data;
+  }
+
+  async updateCategoria(id: number, data: any) {
+    const response = await this.client.patch(`/categorias/${id}`, data);
+    return response.data;
+  }
+
+  async deleteCategoria(id: number) {
+    const response = await this.client.delete(`/categorias/${id}`);
     return response.data;
   }
 
@@ -388,6 +456,16 @@ class ApiClient {
     return response.data;
   }
 
+  async forgotPassword(correo: string) {
+    const response = await this.client.post('/auth/forgot-password', { correo });
+    return response.data;
+  }
+
+  async resetPassword(token: string, newPassword: string) {
+    const response = await this.client.post('/auth/reset-password', { token, newPassword });
+    return response.data;
+  }
+
   async toggleUsuarioActivo(id: number, activo: boolean) {
     const response = await this.client.patch(`/admin-sistema/usuarios/${id}/toggle-activo`, { activo });
     return response.data;
@@ -405,6 +483,142 @@ class ApiClient {
 
   async deleteUsuarioAdmin(id: number) {
     const response = await this.client.delete(`/admin-sistema/usuarios/${id}`);
+    return response.data;
+  }
+
+  // Solicitudes
+  async createSolicitud(data: any) {
+    const response = await this.client.post('/solicitudes', data);
+    return response.data;
+  }
+
+  async getSolicitudes(estado?: string) {
+    const params = estado ? { estado } : {};
+    const response = await this.client.get('/solicitudes', { params });
+    return response.data;
+  }
+
+  async getMisSolicitudes() {
+    const response = await this.client.get('/solicitudes/mis-solicitudes');
+    return response.data;
+  }
+
+  async getSolicitud(id: number) {
+    const response = await this.client.get(`/solicitudes/${id}`);
+    return response.data;
+  }
+
+  async aprobarSolicitud(id: number, observaciones?: string) {
+    const response = await this.client.patch(`/solicitudes/${id}/aprobar`, { observaciones });
+    return response.data;
+  }
+
+  async rechazarSolicitud(id: number, observaciones: string) {
+    const response = await this.client.patch(`/solicitudes/${id}/rechazar`, { observaciones });
+    return response.data;
+  }
+
+  async completarSolicitud(id: number) {
+    const response = await this.client.patch(`/solicitudes/${id}/completar`);
+    return response.data;
+  }
+
+  // Mantenimientos - Estados
+  async iniciarMantenimiento(id: number) {
+    const response = await this.client.patch(`/mantenimientos/${id}`, { estado: 'iniciado', fechaInicio: new Date().toISOString() });
+    return response.data;
+  }
+
+  async pausarMantenimiento(id: number) {
+    const response = await this.client.patch(`/mantenimientos/${id}`, { estado: 'pausado' });
+    return response.data;
+  }
+
+  async finalizarMantenimiento(id: number, data: any) {
+    const response = await this.client.patch(`/mantenimientos/${id}`, { 
+      estado: 'finalizado', 
+      fechaFinalizacion: new Date().toISOString(),
+      ...data 
+    });
+    return response.data;
+  }
+
+  // Notificaciones
+  async getNotificaciones(noLeidas?: boolean) {
+    const params = noLeidas ? { noLeidas: 'true' } : {};
+    const response = await this.client.get('/notificaciones', { params });
+    return response.data;
+  }
+
+  async contarNotificacionesNoLeidas() {
+    const response = await this.client.get('/notificaciones/contar-no-leidas');
+    return response.data;
+  }
+
+  async marcarNotificacionLeida(id: number) {
+    const response = await this.client.patch(`/notificaciones/${id}/leer`);
+    return response.data;
+  }
+
+  async marcarTodasNotificacionesLeidas() {
+    const response = await this.client.patch('/notificaciones/marcar-todas-leidas');
+    return response.data;
+  }
+
+  async eliminarNotificacion(id: number) {
+    const response = await this.client.delete(`/notificaciones/${id}`);
+    return response.data;
+  }
+
+  // Inventario Físico
+  async confirmarActivoInventario(data: { activoId: number; observaciones?: string; ubicacionVerificada?: string }) {
+    const response = await this.client.post('/inventario-fisico/confirmar', data);
+    return response.data;
+  }
+
+  async getInventarioFisico(fecha?: string) {
+    const params = fecha ? { fecha } : {};
+    const response = await this.client.get('/inventario-fisico', { params });
+    return response.data;
+  }
+
+  async getResumenInventario(fecha?: string) {
+    const params = fecha ? { fecha } : {};
+    const response = await this.client.get('/inventario-fisico/resumen', { params });
+    return response.data;
+  }
+
+  // Reportes
+  async getDepreciacionMensual(mes?: number, anio?: number) {
+    const params: any = {};
+    if (mes) params.mes = mes;
+    if (anio) params.anio = anio;
+    const response = await this.client.get('/reportes/depreciacion-mensual', { params });
+    return response.data;
+  }
+
+  async getComparativoContableFiscal() {
+    const response = await this.client.get('/reportes/comparativo-contable-fiscal');
+    return response.data;
+  }
+
+  async getActivosPorCentroCosto() {
+    const response = await this.client.get('/reportes/activos-por-centro-costo');
+    return response.data;
+  }
+
+  async getActivosPorResponsable() {
+    const response = await this.client.get('/reportes/activos-por-responsable');
+    return response.data;
+  }
+
+  async getActivosPorEstado() {
+    const response = await this.client.get('/reportes/activos-por-estado');
+    return response.data;
+  }
+
+  async getInventarioFisicoVsContable() {
+    const response = await this.client.get('/reportes/inventario-fisico-vs-contable');
     return response.data;
   }
 }

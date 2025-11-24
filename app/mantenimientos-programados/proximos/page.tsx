@@ -6,7 +6,7 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import { api } from '@/lib/api';
 import { MantenimientoProgramado } from '@/types';
 import { Calendar, AlertCircle } from 'lucide-react';
-import toast from 'react-hot-toast';
+import { toast } from '@/lib/notifications';
 import { format } from 'date-fns';
 
 export default function MantenimientosProximosPage() {

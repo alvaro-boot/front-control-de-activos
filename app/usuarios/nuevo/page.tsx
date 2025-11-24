@@ -9,8 +9,8 @@ import { api } from '@/lib/api';
 import { Area, Empresa } from '@/types';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
-import toast from 'react-hot-toast';
-import { getStoredUser, isSystemAdmin } from '@/lib/auth';
+import { toast } from '@/lib/notifications';
+import { getStoredUser, isSystemAdmin, hasRole } from '@/lib/auth';
 
 interface UsuarioForm {
   empresaId: number;
@@ -28,8 +28,10 @@ export default function NuevoUsuarioPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [areas, setAreas] = useState<Area[]>([]);
   const [empresas, setEmpresas] = useState<Empresa[]>([]);
+  const [roles, setRoles] = useState<any[]>([]);
   const user = getStoredUser();
   const isAdmin = isSystemAdmin();
+  const isAdminEmpresa = hasRole('administrador');
   const {
     register,
     handleSubmit,
@@ -48,6 +50,7 @@ export default function NuevoUsuarioPage() {
       loadEmpresas();
     }
     loadAreas();
+    loadRoles();
   }, [isAdmin]);
 
   useEffect(() => {
@@ -92,6 +95,39 @@ export default function NuevoUsuarioPage() {
       setAreas(allAreas);
     } catch (error) {
       // Ignorar error
+    }
+  };
+
+  const loadRoles = async () => {
+    try {
+      const rolesData = await api.getRoles();
+      // Filtrar roles según el usuario actual
+      let availableRoles = Array.isArray(rolesData) ? rolesData : [];
+      
+      // Si es administrador de empresa, solo puede crear técnicos
+      if (isAdminEmpresa && !isAdmin) {
+        availableRoles = availableRoles.filter((r: any) => r.nombre === 'tecnico');
+      }
+      // Si es Super Admin, puede crear administradores y técnicos (no empleados)
+      else if (isAdmin) {
+        availableRoles = availableRoles.filter((r: any) => 
+          r.nombre === 'administrador' || r.nombre === 'tecnico'
+        );
+      }
+      
+      setRoles(availableRoles);
+    } catch (error) {
+      // Si no hay endpoint de roles, usar valores hardcodeados
+      if (isAdmin) {
+        setRoles([
+          { id: 1, nombre: 'administrador' },
+          { id: 2, nombre: 'tecnico' },
+        ]);
+      } else if (isAdminEmpresa) {
+        setRoles([
+          { id: 2, nombre: 'tecnico' },
+        ]);
+      }
     }
   };
 
@@ -247,10 +283,14 @@ export default function NuevoUsuarioPage() {
                   className="input"
                 >
                   <option value="">Seleccionar rol</option>
-                  <option value={1}>Administrador</option>
-                  <option value={2}>Técnico</option>
-                  <option value={3}>Empleado</option>
-                  {isAdmin && <option value={4}>Administrador del Sistema</option>}
+                  {roles.map((rol) => (
+                    <option key={rol.id} value={rol.id}>
+                      {rol.nombre === 'administrador' ? 'Administrador' :
+                       rol.nombre === 'tecnico' ? 'Técnico' :
+                       rol.nombre === 'administrador_sistema' ? 'Administrador del Sistema' :
+                       rol.nombre}
+                    </option>
+                  ))}
                 </select>
                 {errors.rolId && (
                   <p className="mt-1 text-sm text-red-600">

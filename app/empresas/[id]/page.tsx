@@ -8,7 +8,7 @@ import { api } from '@/lib/api';
 import { Empresa } from '@/types';
 import { ArrowLeft, Edit, Trash2 } from 'lucide-react';
 import Link from 'next/link';
-import toast from 'react-hot-toast';
+import { toast } from '@/lib/notifications';
 import { isSystemAdmin } from '@/lib/auth';
 
 export default function EmpresaDetailPage() {
@@ -54,7 +54,14 @@ export default function EmpresaDetailPage() {
   }
 
   const handleDelete = async () => {
-    if (!confirm('¿Estás seguro de eliminar esta empresa? Esta acción no se puede deshacer.')) {
+    const { confirm: confirmDelete } = await import('@/lib/confirm');
+    const confirmed = await confirmDelete('¿Estás seguro de eliminar esta empresa? Esta acción no se puede deshacer.', {
+      title: 'Confirmar Eliminación',
+      type: 'danger',
+      confirmText: 'Eliminar',
+      cancelText: 'Cancelar',
+    });
+    if (!confirmed) {
       return;
     }
 
@@ -68,7 +75,7 @@ export default function EmpresaDetailPage() {
   };
 
   return (
-    <ProtectedRoute allowedRoles={['administrador_sistema']}>
+    <ProtectedRoute>
       <Layout>
         <div className="space-y-6">
           <div className="flex items-center justify-between">
@@ -88,15 +95,15 @@ export default function EmpresaDetailPage() {
                 </p>
               </div>
             </div>
-            {isAdmin && (
-              <div className="flex items-center space-x-2">
-                <Link
-                  href={`/empresas/${empresa.id}/editar`}
-                  className="btn btn-primary flex items-center"
-                >
-                  <Edit className="mr-2 h-4 w-4" />
-                  Editar
-                </Link>
+            <div className="flex items-center space-x-2">
+              <Link
+                href={`/empresas/${empresa.id}/editar`}
+                className="btn btn-primary flex items-center"
+              >
+                <Edit className="mr-2 h-4 w-4" />
+                Editar
+              </Link>
+              {isAdmin && (
                 <button
                   onClick={handleDelete}
                   className="btn btn-danger flex items-center"
@@ -104,8 +111,8 @@ export default function EmpresaDetailPage() {
                   <Trash2 className="mr-2 h-4 w-4" />
                   Eliminar
                 </button>
-              </div>
-            )}
+              )}
+            </div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

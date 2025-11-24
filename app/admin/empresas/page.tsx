@@ -6,7 +6,7 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import { api } from '@/lib/api';
 import { Building2, Plus, Edit, Trash2, Eye, Power } from 'lucide-react';
 import Link from 'next/link';
-import toast from 'react-hot-toast';
+import { toast } from '@/lib/notifications';
 import ConfirmDialog from '@/components/ConfirmDialog';
 
 interface Empresa {

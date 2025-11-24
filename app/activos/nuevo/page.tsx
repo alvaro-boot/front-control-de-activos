@@ -6,8 +6,8 @@ import { useForm } from 'react-hook-form';
 import Layout from '@/components/Layout';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { api } from '@/lib/api';
-import { Categoria, Sede, Area, User } from '@/types';
-import toast from 'react-hot-toast';
+import { Categoria, Sede, Area, Empleado } from '@/types';
+import { toast } from '@/lib/notifications';
 
 interface ActivoForm {
   empresaId: number;
@@ -30,7 +30,7 @@ export default function NuevoActivoPage() {
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [sedes, setSedes] = useState<Sede[]>([]);
   const [areas, setAreas] = useState<Area[]>([]);
-  const [usuarios, setUsuarios] = useState<User[]>([]);
+  const [empleados, setEmpleados] = useState<Empleado[]>([]);
   const {
     register,
     handleSubmit,
@@ -56,15 +56,15 @@ export default function NuevoActivoPage() {
       const user = userStr ? JSON.parse(userStr) : null;
       const empresaId = user?.empresaId || 1;
 
-      const [cats, seds, usrs] = await Promise.all([
+      const [cats, seds, emps] = await Promise.all([
         api.getCategorias(empresaId),
         api.getSedes(empresaId),
-        api.getUsuarios(),
+        api.getEmpleados(empresaId),
       ]);
 
       setCategorias(Array.isArray(cats) ? cats : []);
       setSedes(Array.isArray(seds) ? seds : []);
-      setUsuarios(Array.isArray(usrs) ? usrs : []);
+      setEmpleados(Array.isArray(emps) ? emps : []);
 
       // Cargar áreas de la primera sede si existe
       if (seds.length > 0) {
@@ -216,9 +216,9 @@ export default function NuevoActivoPage() {
                   className="input"
                 >
                   <option value="">Seleccionar responsable</option>
-                  {usuarios.map((user) => (
-                    <option key={user.id} value={user.id}>
-                      {user.nombreCompleto}
+                  {empleados.map((empleado) => (
+                    <option key={empleado.id} value={empleado.id}>
+                      {empleado.nombre}
                     </option>
                   ))}
                 </select>

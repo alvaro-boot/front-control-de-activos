@@ -5,9 +5,10 @@ import Layout from '@/components/Layout';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { api } from '@/lib/api';
 import { Activo, Empresa } from '@/types';
-import { Plus, Search, Edit, Trash2, QrCode, Eye } from 'lucide-react';
+import { Plus, Search, Edit, Trash2, QrCode, Eye, Package, Sparkles } from 'lucide-react';
 import Link from 'next/link';
-import toast from 'react-hot-toast';
+import { toast } from '@/lib/notifications';
+import { formatCurrency } from '@/lib/currency';
 import { useRouter } from 'next/navigation';
 import { getStoredUser, isSystemAdmin } from '@/lib/auth';
 
@@ -57,8 +58,6 @@ export default function ActivosPage() {
   const loadActivos = async () => {
     try {
       setIsLoading(true);
-      // Solo enviar empresaId si es admin del sistema y ha seleccionado una empresa
-      // Si no es admin, el backend filtra automáticamente por su empresa
       const empresaId = isAdmin ? selectedEmpresaId : undefined;
       const data = await api.getActivos(empresaId);
       const activosData = Array.isArray(data) ? data : [];
@@ -72,7 +71,14 @@ export default function ActivosPage() {
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm('¿Estás seguro de eliminar este activo?')) return;
+    const { confirm } = await import('@/lib/confirm');
+    const confirmed = await confirm('¿Estás seguro de eliminar este activo?', {
+      title: 'Confirmar Eliminación',
+      type: 'danger',
+      confirmText: 'Eliminar',
+      cancelText: 'Cancelar',
+    });
+    if (!confirmed) return;
 
     try {
       await api.deleteActivo(id);
@@ -96,15 +102,15 @@ export default function ActivosPage() {
   const getEstadoColor = (estado: string) => {
     switch (estado) {
       case 'activo':
-        return 'bg-green-100 text-green-800';
+        return 'bg-green-500/20 text-green-400 border border-green-500/30';
       case 'mantenimiento':
-        return 'bg-yellow-100 text-yellow-800';
+        return 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30';
       case 'retirado':
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-gray-500/20 text-gray-400 border border-gray-500/30';
       case 'perdido':
-        return 'bg-red-100 text-red-800';
+        return 'bg-red-500/20 text-red-400 border border-red-500/30';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-gray-500/20 text-gray-400 border border-gray-500/30';
     }
   };
 
@@ -112,27 +118,34 @@ export default function ActivosPage() {
     <ProtectedRoute>
       <Layout>
         <div className="space-y-6">
+          {/* Header */}
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Activos</h1>
-              <p className="mt-2 text-sm text-gray-600">
+              <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-neon-blue via-neon-magenta to-neon-cyan bg-clip-text text-transparent animate-gradient bg-200% flex items-center">
+                <Package className="mr-3 h-8 w-8 text-neon-cyan" />
+                Activos
+              </h1>
+              <p className="text-gray-400 text-sm">
                 Gestión de activos del sistema
               </p>
             </div>
             <Link
               href="/activos/nuevo"
-              className="btn btn-primary flex items-center"
+              className="relative overflow-hidden group"
             >
-              <Plus className="mr-2 h-5 w-5" />
-              Nuevo Activo
+              <div className="absolute inset-0 bg-gradient-to-r from-neon-blue via-neon-magenta to-neon-cyan opacity-75 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="relative px-6 py-3 bg-dark-bg-lighter/50 backdrop-blur-sm border border-neon-cyan/50 rounded-lg font-semibold text-white group-hover:border-neon-cyan transition-all duration-300 group-hover:shadow-lg group-hover:shadow-neon-cyan/50 flex items-center">
+                <Plus className="mr-2 h-5 w-5" />
+                Nuevo Activo
+              </div>
             </Link>
           </div>
 
           {/* Filtros */}
-          <div className="card space-y-4">
+          <div className="card card-glow">
             {isAdmin && (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-300 mb-2">
                   Filtrar por Empresa
                 </label>
                 <select
@@ -140,9 +153,9 @@ export default function ActivosPage() {
                   onChange={(e) => setSelectedEmpresaId(e.target.value ? Number(e.target.value) : undefined)}
                   className="input"
                 >
-                  <option value="">Todas las empresas</option>
+                  <option value="" className="bg-dark-bg text-gray-400">Todas las empresas</option>
                   {empresas.map((empresa) => (
-                    <option key={empresa.id} value={empresa.id}>
+                    <option key={empresa.id} value={empresa.id} className="bg-dark-bg-lighter text-white">
                       {empresa.nombre}
                     </option>
                   ))}
@@ -150,7 +163,7 @@ export default function ActivosPage() {
               </div>
             )}
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neon-cyan h-5 w-5" />
               <input
                 type="text"
                 placeholder="Buscar por código o nombre..."
@@ -164,12 +177,15 @@ export default function ActivosPage() {
           {/* Tabla de activos */}
           {isLoading ? (
             <div className="flex items-center justify-center py-12">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+              <div className="relative">
+                <div className="absolute inset-0 bg-neon-cyan rounded-full blur-xl opacity-50 animate-glow-pulse" />
+                <div className="relative animate-spin rounded-full h-12 w-12 border-2 border-neon-cyan border-t-transparent"></div>
+              </div>
             </div>
           ) : (
-            <div className="card">
+            <div className="card card-glow">
               {filteredActivos.length === 0 ? (
-                <p className="text-gray-500 text-center py-8">
+                <p className="text-gray-400 text-center py-8">
                   No hay activos registrados
                 </p>
               ) : (
@@ -187,36 +203,34 @@ export default function ActivosPage() {
                     </thead>
                     <tbody>
                       {filteredActivos.map((activo) => (
-                        <tr key={activo.id}>
-                          <td className="font-medium">{activo.codigo}</td>
-                          <td>{activo.nombre}</td>
-                          <td>{activo.categoria?.nombre || 'N/A'}</td>
+                        <tr key={activo.id} className="hover:bg-dark-bg/50 transition-colors">
+                          <td className="font-medium text-neon-cyan">{activo.codigo}</td>
+                          <td className="text-gray-300">{activo.nombre}</td>
+                          <td className="text-gray-400">{activo.categoria?.nombre || 'N/A'}</td>
                           <td>
                             <span
-                              className={`px-2 py-1 text-xs font-semibold rounded-full ${getEstadoColor(
+                              className={`px-3 py-1 text-xs font-semibold rounded-full ${getEstadoColor(
                                 activo.estado
                               )}`}
                             >
                               {activo.estado}
                             </span>
                           </td>
-                          <td>
-                            {activo.valorActual
-                              ? `$${activo.valorActual.toLocaleString()}`
-                              : 'N/A'}
+                          <td className="text-neon-cyan font-medium">
+                            {formatCurrency(activo.valorActual)}
                           </td>
                           <td>
-                            <div className="flex items-center space-x-2">
+                            <div className="flex items-center space-x-3">
                               <Link
                                 href={`/activos/${activo.id}`}
-                                className="text-primary-600 hover:text-primary-800"
+                                className="text-neon-cyan hover:text-neon-blue transition-colors"
                                 title="Ver detalles"
                               >
                                 <Eye className="h-5 w-5" />
                               </Link>
                               <Link
                                 href={`/activos/${activo.id}/historial`}
-                                className="text-purple-600 hover:text-purple-800"
+                                className="text-neon-magenta hover:text-pink-400 transition-colors"
                                 title="Ver historial"
                               >
                                 <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -225,21 +239,21 @@ export default function ActivosPage() {
                               </Link>
                               <Link
                                 href={`/activos/${activo.id}/editar`}
-                                className="text-blue-600 hover:text-blue-800"
+                                className="text-neon-blue hover:text-blue-400 transition-colors"
                                 title="Editar"
                               >
                                 <Edit className="h-5 w-5" />
                               </Link>
                               <button
                                 onClick={() => handleRegenerateQR(activo.id)}
-                                className="text-purple-600 hover:text-purple-800"
+                                className="text-neon-magenta hover:text-pink-400 transition-colors"
                                 title="Regenerar QR"
                               >
                                 <QrCode className="h-5 w-5" />
                               </button>
                               <button
                                 onClick={() => handleDelete(activo.id)}
-                                className="text-red-600 hover:text-red-800"
+                                className="text-red-400 hover:text-red-300 transition-colors"
                                 title="Eliminar"
                               >
                                 <Trash2 className="h-5 w-5" />
@@ -259,4 +273,3 @@ export default function ActivosPage() {
     </ProtectedRoute>
   );
 }
-

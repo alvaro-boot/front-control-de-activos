@@ -7,7 +7,7 @@ import { api } from '@/lib/api';
 import { User, Empresa } from '@/types';
 import { Plus, Search, Edit, Trash2, Eye } from 'lucide-react';
 import Link from 'next/link';
-import toast from 'react-hot-toast';
+import { toast } from '@/lib/notifications';
 import { isSystemAdmin } from '@/lib/auth';
 import { useRouter } from 'next/navigation';
 
@@ -77,14 +77,25 @@ export default function UsuariosPage() {
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm('¿Estás seguro de eliminar este usuario?')) return;
+    const { confirm } = await import('@/lib/confirm');
+    const confirmed = await confirm('¿Estás seguro de eliminar este usuario?', {
+      title: 'Confirmar Eliminación',
+      type: 'danger',
+      confirmText: 'Eliminar',
+      cancelText: 'Cancelar',
+    });
+    if (!confirmed) return;
 
     try {
       await api.deleteUsuario(id);
       toast.success('Usuario eliminado exitosamente');
       loadUsuarios();
     } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Error al eliminar usuario');
+      console.error('Error al eliminar usuario:', error);
+      const errorMessage = error.response?.data?.message || 
+                          error.message || 
+                          'Error al eliminar usuario';
+      toast.error(errorMessage);
     }
   };
 

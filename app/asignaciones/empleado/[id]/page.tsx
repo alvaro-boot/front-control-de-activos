@@ -8,7 +8,7 @@ import { api } from '@/lib/api';
 import { Asignacion, Empleado } from '@/types';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
-import toast from 'react-hot-toast';
+import { toast } from '@/lib/notifications';
 import { format } from 'date-fns';
 
 export default function HistorialEmpleadoPage() {

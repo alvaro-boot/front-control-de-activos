@@ -1,14 +1,11 @@
-import type { Metadata } from 'next';
+'use client';
+
 import { Inter } from 'next/font/google';
 import './globals.css';
-import { Toaster } from 'react-hot-toast';
+import { NotificationProvider } from '@/contexts/NotificationContext';
+import { ConfirmProvider } from '@/contexts/ConfirmContext';
 
 const inter = Inter({ subsets: ['latin'] });
-
-export const metadata: Metadata = {
-  title: 'Sistema de Control de Activos',
-  description: 'Sistema de gestión de activos con códigos QR',
-};
 
 export default function RootLayout({
   children,
@@ -18,8 +15,11 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className={inter.className}>
-        {children}
-        <Toaster position="top-right" />
+        <NotificationProvider>
+          <ConfirmProvider>
+            {children}
+          </ConfirmProvider>
+        </NotificationProvider>
       </body>
     </html>
   );

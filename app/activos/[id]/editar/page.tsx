@@ -6,10 +6,10 @@ import { useForm } from 'react-hook-form';
 import Layout from '@/components/Layout';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { api } from '@/lib/api';
-import { Activo, Categoria, Sede, Area, User } from '@/types';
+import { Activo, Categoria, Sede, Area, Empleado } from '@/types';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
-import toast from 'react-hot-toast';
+import { toast } from '@/lib/notifications';
 
 interface ActivoForm {
   codigo: string;
@@ -33,7 +33,7 @@ export default function EditarActivoPage() {
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [sedes, setSedes] = useState<Sede[]>([]);
   const [areas, setAreas] = useState<Area[]>([]);
-  const [usuarios, setUsuarios] = useState<User[]>([]);
+  const [empleados, setEmpleados] = useState<Empleado[]>([]);
   const {
     register,
     handleSubmit,
@@ -62,17 +62,17 @@ export default function EditarActivoPage() {
       const user = userStr ? JSON.parse(userStr) : null;
       const empresaId = user?.empresaId || 1;
 
-      const [activoData, cats, seds, usrs] = await Promise.all([
+      const [activoData, cats, seds, emps] = await Promise.all([
         api.getActivo(id),
         api.getCategorias(empresaId),
         api.getSedes(empresaId),
-        api.getUsuarios(),
+        api.getEmpleados(empresaId),
       ]);
 
       setActivo(activoData);
       setCategorias(Array.isArray(cats) ? cats : []);
       setSedes(Array.isArray(seds) ? seds : []);
-      setUsuarios(Array.isArray(usrs) ? usrs : []);
+      setEmpleados(Array.isArray(emps) ? emps : []);
 
       // Cargar áreas de la sede del activo
       if (activoData.sedeId) {
@@ -250,9 +250,9 @@ export default function EditarActivoPage() {
                   className="input"
                 >
                   <option value="">Seleccionar responsable</option>
-                  {usuarios.map((user) => (
-                    <option key={user.id} value={user.id}>
-                      {user.nombreCompleto}
+                  {empleados.map((empleado) => (
+                    <option key={empleado.id} value={empleado.id}>
+                      {empleado.nombre}
                     </option>
                   ))}
                 </select>

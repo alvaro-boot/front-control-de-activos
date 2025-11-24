@@ -20,14 +20,17 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         )}
         <input
           ref={ref}
-          className={`input ${error ? 'border-red-500' : ''} ${className}`}
+          className={`input ${error ? 'border-red-400/50 focus:ring-red-400/50' : ''} ${className}`}
           {...props}
         />
         {error && (
-          <p className="mt-1 text-sm text-red-600">{error}</p>
+          <p className="mt-1 text-sm text-red-600 flex items-center">
+            <span className="mr-1">⚠️</span>
+            {error}
+          </p>
         )}
         {helperText && !error && (
-          <p className="mt-1 text-sm text-gray-500">{helperText}</p>
+          <p className="mt-1 text-sm text-gray-600">{helperText}</p>
         )}
       </div>
     );
@@ -37,4 +40,3 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
 Input.displayName = 'Input';
 
 export default Input;
-

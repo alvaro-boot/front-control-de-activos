@@ -9,7 +9,7 @@ import { api } from '@/lib/api';
 import { User, Area, Empresa } from '@/types';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
-import toast from 'react-hot-toast';
+import { toast } from '@/lib/notifications';
 import { getStoredUser, isSystemAdmin } from '@/lib/auth';
 
 interface UsuarioForm {

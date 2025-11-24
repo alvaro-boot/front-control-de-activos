@@ -8,7 +8,8 @@ import { api } from '@/lib/api';
 import { Mantenimiento } from '@/types';
 import { ArrowLeft, Edit } from 'lucide-react';
 import Link from 'next/link';
-import toast from 'react-hot-toast';
+import { toast } from '@/lib/notifications';
+import { formatCurrency } from '@/lib/currency';
 import { format } from 'date-fns';
 
 export default function MantenimientoDetailPage() {
@@ -126,9 +127,7 @@ export default function MantenimientoDetailPage() {
               <div>
                 <label className="text-sm font-medium text-gray-500">Costo</label>
                 <p className="mt-1 text-sm text-gray-900">
-                  {mantenimiento.costo
-                    ? `$${mantenimiento.costo.toLocaleString()}`
-                    : 'N/A'}
+                  {formatCurrency(mantenimiento.costo)}
                 </p>
               </div>
               {mantenimiento.notas && (

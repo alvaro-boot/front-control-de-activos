@@ -7,7 +7,7 @@ import { api } from '@/lib/api';
 import { Asignacion, Empresa } from '@/types';
 import { Plus, Search, CheckCircle, Eye } from 'lucide-react';
 import Link from 'next/link';
-import toast from 'react-hot-toast';
+import { toast } from '@/lib/notifications';
 import { format } from 'date-fns';
 import { getStoredUser, isSystemAdmin } from '@/lib/auth';
 
@@ -77,7 +77,14 @@ export default function AsignacionesPage() {
   };
 
   const handleDevolver = async (id: number) => {
-    if (!confirm('¿Confirmar devolución del activo?')) return;
+    const { confirm: confirmAction } = await import('@/lib/confirm');
+    const confirmed = await confirmAction('¿Confirmar devolución del activo?', {
+      title: 'Confirmar Devolución',
+      type: 'warning',
+      confirmText: 'Aceptar',
+      cancelText: 'Cancelar',
+    });
+    if (!confirmed) return;
 
     try {
       await api.devolverAsignacion(id, {

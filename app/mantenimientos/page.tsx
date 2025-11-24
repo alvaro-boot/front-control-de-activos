@@ -7,7 +7,8 @@ import { api } from '@/lib/api';
 import { Mantenimiento, Empresa } from '@/types';
 import { Plus, Search } from 'lucide-react';
 import Link from 'next/link';
-import toast from 'react-hot-toast';
+import { toast } from '@/lib/notifications';
+import { formatCurrency } from '@/lib/currency';
 import { format } from 'date-fns';
 import { isSystemAdmin } from '@/lib/auth';
 
@@ -183,9 +184,7 @@ export default function MantenimientosPage() {
                           </td>
                           <td>{mant.tecnico?.nombreCompleto || 'N/A'}</td>
                           <td>
-                            {mant.costo
-                              ? `$${mant.costo.toLocaleString()}`
-                              : 'N/A'}
+                            {formatCurrency(mant.costo)}
                           </td>
                           <td className="max-w-xs truncate">
                             {mant.notas || 'Sin notas'}

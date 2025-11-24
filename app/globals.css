@@ -4,26 +4,15 @@
 
 :root {
   --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+  --background-start-rgb: 240, 245, 255;
+  --background-end-rgb: 250, 252, 255;
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  color: rgb(30, 30, 30);
+  background: linear-gradient(135deg, #f0f5ff 0%, #fafcff 50%, #f0f5ff 100%);
+  min-height: 100vh;
+  background-attachment: fixed;
 }
 
 @layer utilities {
@@ -32,29 +21,51 @@ body {
   }
 }
 
-/* Estilos personalizados */
+/* Estilos personalizados PrismaAsset360 - Glassmorphism */
 .btn {
-  @apply px-4 py-2 rounded-lg font-medium transition-colors duration-200;
+  @apply px-4 py-2 rounded-lg font-medium transition-all duration-300;
 }
 
 .btn-primary {
-  @apply bg-primary-600 text-white hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed;
+  @apply relative overflow-hidden;
 }
 
 .btn-secondary {
-  @apply bg-gray-200 text-gray-800 hover:bg-gray-300;
+  @apply bg-white/40 backdrop-blur-md border border-neon-blue/40 text-neon-blue hover:border-neon-blue hover:shadow-lg hover:shadow-neon-blue/30 hover:bg-white/60;
 }
 
 .btn-danger {
-  @apply bg-red-600 text-white hover:bg-red-700;
+  @apply bg-white/40 backdrop-blur-md border border-red-400/50 text-red-600 hover:bg-white/60 hover:border-red-500 hover:shadow-lg hover:shadow-red-400/30;
+}
+
+.btn-success {
+  @apply bg-white/40 backdrop-blur-md border border-green-400/50 text-green-600 hover:bg-white/60 hover:border-green-500 hover:shadow-lg hover:shadow-green-400/30;
+}
+
+.btn-sm {
+  @apply px-3 py-1.5 text-sm;
 }
 
 .input {
-  @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent;
+  @apply w-full px-4 py-2 bg-white/50 backdrop-blur-md border border-neon-blue/30 rounded-lg text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-neon-cyan/50 focus:border-neon-cyan transition-all duration-300 hover:border-neon-blue/50;
+}
+
+.input:focus {
+  @apply shadow-lg shadow-neon-cyan/20 bg-white/70;
 }
 
 .card {
-  @apply bg-white rounded-lg shadow-md p-6;
+  @apply bg-white/60 backdrop-blur-xl border border-neon-blue/20 rounded-xl shadow-xl p-6;
+}
+
+.card-glow {
+  @apply relative;
+}
+
+.card-glow::before {
+  content: '';
+  @apply absolute -inset-1 bg-gradient-to-r from-neon-blue via-neon-magenta to-neon-cyan rounded-xl blur opacity-20 animate-glow-pulse;
+  z-index: -1;
 }
 
 .table {
@@ -62,14 +73,100 @@ body {
 }
 
 .table th {
-  @apply px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50 border-b;
+  @apply px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider bg-white/40 backdrop-blur-sm border-b border-neon-blue/20;
 }
 
 .table td {
-  @apply px-4 py-3 text-sm text-gray-900 border-b;
+  @apply px-4 py-3 text-sm text-gray-700 border-b border-neon-blue/10;
 }
 
 .table tr:hover {
-  @apply bg-gray-50;
+  @apply bg-white/40 backdrop-blur-sm;
 }
 
+/* Scrollbar personalizado */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-white/30;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-neon-blue/40 rounded-full backdrop-blur-sm;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-neon-blue/60;
+}
+
+/* Efectos de texto neon */
+.text-neon-blue {
+  text-shadow: 0 0 10px rgba(0, 240, 255, 0.4), 0 0 20px rgba(0, 240, 255, 0.2);
+}
+
+.text-neon-magenta {
+  text-shadow: 0 0 10px rgba(255, 0, 255, 0.4), 0 0 20px rgba(255, 0, 255, 0.2);
+}
+
+.text-neon-cyan {
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.4), 0 0 20px rgba(0, 255, 255, 0.2);
+}
+
+/* Animaciones personalizadas */
+@keyframes glow-pulse {
+  0%, 100% {
+    opacity: 0.3;
+    filter: brightness(1);
+  }
+  50% {
+    opacity: 0.5;
+    filter: brightness(1.2);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes gradient {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-gradient {
+  animation: gradient 8s ease infinite;
+  background-size: 200% 200%;
+}
+
+/* Glassmorphism utilities */
+.glass {
+  @apply bg-white/40 backdrop-blur-xl border border-white/50;
+}
+
+.glass-dark {
+  @apply bg-white/30 backdrop-blur-lg border border-white/40;
+}
+
+.glass-light {
+  @apply bg-white/60 backdrop-blur-md border border-white/60;
+}

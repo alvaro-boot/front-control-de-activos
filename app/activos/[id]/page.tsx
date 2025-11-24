@@ -8,7 +8,8 @@ import { api } from '@/lib/api';
 import { Activo } from '@/types';
 import { ArrowLeft, Edit, QrCode, Download } from 'lucide-react';
 import Link from 'next/link';
-import toast from 'react-hot-toast';
+import { toast } from '@/lib/notifications';
+import { formatCurrency } from '@/lib/currency';
 import { format } from 'date-fns';
 import { QRCodeSVG } from 'qrcode.react';
 
@@ -206,38 +207,32 @@ export default function ActivoDetailPage() {
                         : 'N/A'}
                     </p>
                   </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-500">
-                      Valor de Compra
-                    </label>
-                    <p className="mt-1 text-sm text-gray-900">
-                      {activo.valorCompra
-                        ? `$${activo.valorCompra.toLocaleString()}`
-                        : 'N/A'}
-                    </p>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-500">
-                      Valor Actual
-                    </label>
-                    <p className="mt-1 text-sm text-gray-900">
-                      {activo.valorActual
-                        ? `$${activo.valorActual.toLocaleString()}`
-                        : 'N/A'}
-                    </p>
-                  </div>
-                  {activo.valorCompra && activo.valorActual && (
-                    <div>
-                      <label className="text-sm font-medium text-gray-500">
-                        Depreciación
-                      </label>
-                      <p className="mt-1 text-sm text-gray-900">
-                        ${(
-                          activo.valorCompra - activo.valorActual
-                        ).toLocaleString()}
-                      </p>
-                    </div>
-                  )}
+                      <div>
+                        <label className="text-sm font-medium text-gray-500">
+                          Valor de Compra
+                        </label>
+                        <p className="mt-1 text-sm text-gray-900">
+                          {formatCurrency(activo.valorCompra)}
+                        </p>
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-gray-500">
+                          Valor Actual
+                        </label>
+                        <p className="mt-1 text-sm text-gray-900">
+                          {formatCurrency(activo.valorActual)}
+                        </p>
+                      </div>
+                      {activo.valorCompra && activo.valorActual && (
+                        <div>
+                          <label className="text-sm font-medium text-gray-500">
+                            Depreciación
+                          </label>
+                          <p className="mt-1 text-sm text-gray-900">
+                            {formatCurrency(activo.valorCompra - activo.valorActual)}
+                          </p>
+                        </div>
+                      )}
                 </div>
               </div>
             </div>

@@ -8,7 +8,7 @@ import { api } from '@/lib/api';
 import { User } from '@/types';
 import { ArrowLeft, Edit } from 'lucide-react';
 import Link from 'next/link';
-import toast from 'react-hot-toast';
+import { toast } from '@/lib/notifications';
 
 export default function UsuarioDetailPage() {
   const params = useParams();

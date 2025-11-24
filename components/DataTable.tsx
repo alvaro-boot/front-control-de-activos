@@ -26,7 +26,10 @@ export default function DataTable<T extends { id: number }>({
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+        <div className="relative">
+          <div className="absolute inset-0 bg-neon-cyan rounded-full blur-xl opacity-30 animate-glow-pulse" />
+          <div className="relative animate-spin rounded-full h-12 w-12 border-2 border-neon-cyan border-t-transparent"></div>
+        </div>
       </div>
     );
   }
@@ -34,7 +37,7 @@ export default function DataTable<T extends { id: number }>({
   if (data.length === 0) {
     return (
       <div className="text-center py-12">
-        <p className="text-gray-500">{emptyMessage}</p>
+        <p className="text-gray-600">{emptyMessage}</p>
       </div>
     );
   }
@@ -61,7 +64,7 @@ export default function DataTable<T extends { id: number }>({
             <tr
               key={row.id}
               onClick={() => onRowClick?.(row)}
-              className={onRowClick ? 'cursor-pointer hover:bg-gray-50' : ''}
+              className={onRowClick ? 'cursor-pointer' : ''}
             >
               {columns.map((column, index) => {
                 const value = getCellValue(column, row);
@@ -78,4 +81,3 @@ export default function DataTable<T extends { id: number }>({
     </div>
   );
 }
-

@@ -7,9 +7,9 @@ import Layout from '@/components/Layout';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { api } from '@/lib/api';
 import { Activo, User, Sede, Categoria, Empresa } from '@/types';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Plus, X } from 'lucide-react';
 import Link from 'next/link';
-import toast from 'react-hot-toast';
+import { toast } from '@/lib/notifications';
 import { getStoredUser, isSystemAdmin } from '@/lib/auth';
 
 interface MantenimientoProgramadoForm {
@@ -22,6 +22,7 @@ interface MantenimientoProgramadoForm {
   fechaProgramada: string;
   tipo?: string;
   descripcion?: string;
+  tareas?: string[];
 }
 
 export default function NuevoMantenimientoProgramadoPage() {
@@ -33,6 +34,8 @@ export default function NuevoMantenimientoProgramadoPage() {
   const [tecnicos, setTecnicos] = useState<User[]>([]);
   const [empresas, setEmpresas] = useState<Empresa[]>([]);
   const [activosCount, setActivosCount] = useState(0);
+  const [tareas, setTareas] = useState<string[]>([]);
+  const [nuevaTarea, setNuevaTarea] = useState('');
   const user = getStoredUser();
   const isAdmin = isSystemAdmin();
   const {
@@ -153,6 +156,17 @@ export default function NuevoMantenimientoProgramadoPage() {
     }
   };
 
+  const agregarTarea = () => {
+    if (nuevaTarea.trim()) {
+      setTareas([...tareas, nuevaTarea.trim()]);
+      setNuevaTarea('');
+    }
+  };
+
+  const eliminarTarea = (index: number) => {
+    setTareas(tareas.filter((_, i) => i !== index));
+  };
+
   const onSubmit = async (data: MantenimientoProgramadoForm) => {
     setIsLoading(true);
     try {
@@ -163,6 +177,8 @@ export default function NuevoMantenimientoProgramadoPage() {
           categoriaId: data.categoriaId,
           tecnicoId: data.tecnicoId,
           fechaProgramada: data.fechaProgramada,
+          descripcion: data.descripcion,
+          tareas: tareas.length > 0 ? tareas : undefined,
         });
         toast.success(
           `Se programaron ${result.creados} mantenimientos exitosamente`
@@ -172,6 +188,8 @@ export default function NuevoMantenimientoProgramadoPage() {
           activoId: data.activoId,
           tecnicoId: data.tecnicoId,
           fechaProgramada: data.fechaProgramada,
+          descripcion: data.descripcion,
+          tareas: tareas.length > 0 ? tareas : undefined,
         });
         toast.success('Mantenimiento programado exitosamente');
       }
@@ -369,30 +387,88 @@ export default function NuevoMantenimientoProgramadoPage() {
               </div>
 
               {modo === 'individual' && (
-                <>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Tipo
-                    </label>
-                    <select {...register('tipo')} className="input">
-                      <option value="preventivo">Preventivo</option>
-                      <option value="correctivo">Correctivo</option>
-                    </select>
-                  </div>
-
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Descripción
-                    </label>
-                    <textarea
-                      {...register('descripcion')}
-                      rows={4}
-                      className="input"
-                      placeholder="Descripción del mantenimiento a realizar..."
-                    />
-                  </div>
-                </>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Tipo
+                  </label>
+                  <select {...register('tipo')} className="input">
+                    <option value="preventivo">Preventivo</option>
+                    <option value="correctivo">Correctivo</option>
+                  </select>
+                </div>
               )}
+
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Descripción
+                </label>
+                <textarea
+                  {...register('descripcion')}
+                  rows={4}
+                  className="input"
+                  placeholder="Descripción del mantenimiento a realizar..."
+                />
+              </div>
+
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Tareas del Mantenimiento
+                </label>
+                <div className="space-y-3">
+                  <div className="flex space-x-2">
+                    <input
+                      type="text"
+                      value={nuevaTarea}
+                      onChange={(e) => setNuevaTarea(e.target.value)}
+                      onKeyPress={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          agregarTarea();
+                        }
+                      }}
+                      className="input flex-1"
+                      placeholder="Ej: Revisar sistema eléctrico, Limpiar filtros..."
+                    />
+                    <button
+                      type="button"
+                      onClick={agregarTarea}
+                      className="btn btn-secondary flex items-center"
+                    >
+                      <Plus className="h-4 w-4 mr-1" />
+                      Agregar
+                    </button>
+                  </div>
+                  
+                  {tareas.length > 0 && (
+                    <div className="space-y-2">
+                      {tareas.map((tarea, index) => (
+                        <div
+                          key={index}
+                          className="flex items-center justify-between p-3 bg-gray-50 border border-gray-200 rounded-lg"
+                        >
+                          <span className="text-sm text-gray-700 flex-1">
+                            {index + 1}. {tarea}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => eliminarTarea(index)}
+                            className="text-red-600 hover:text-red-800 ml-2"
+                            title="Eliminar tarea"
+                          >
+                            <X className="h-4 w-4" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  
+                  {tareas.length === 0 && (
+                    <p className="text-sm text-gray-500 italic">
+                      No hay tareas agregadas. Agrega tareas específicas a realizar durante el mantenimiento.
+                    </p>
+                  )}
+                </div>
+              </div>
             </div>
 
             <div className="flex justify-end space-x-4">

@@ -8,7 +8,7 @@ import { api } from '@/lib/api';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
-import toast from 'react-hot-toast';
+import { toast } from '@/lib/notifications';
 
 interface EmpresaForm {
   nombre: string;

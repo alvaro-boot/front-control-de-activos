@@ -33,6 +33,8 @@ export interface Sede {
   nombre: string;
   direccion?: string;
   creadoEn: string;
+  empresa?: Empresa;
+  areas?: Area[];
 }
 
 export interface Area {
@@ -48,6 +50,8 @@ export interface Categoria {
   empresaId: number;
   nombre: string;
   descripcion?: string;
+  empresa?: Empresa;
+  activos?: Activo[];
 }
 
 export interface Empleado {
@@ -122,6 +126,8 @@ export interface MantenimientoProgramado {
   tecnicoId?: number;
   fechaProgramada: string;
   estado: 'pendiente' | 'realizado' | 'cancelado';
+  descripcion?: string;
+  tareas?: string[];
   creadoEn: string;
   activo?: Activo;
   tecnico?: User;

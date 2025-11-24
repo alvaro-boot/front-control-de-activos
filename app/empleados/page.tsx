@@ -7,7 +7,7 @@ import { api } from '@/lib/api';
 import { Empleado, Empresa } from '@/types';
 import { Plus, Search } from 'lucide-react';
 import Link from 'next/link';
-import toast from 'react-hot-toast';
+import { toast } from '@/lib/notifications';
 import { getStoredUser, isSystemAdmin } from '@/lib/auth';
 
 export default function EmpleadosPage() {

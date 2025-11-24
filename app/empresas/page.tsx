@@ -7,7 +7,7 @@ import { api } from '@/lib/api';
 import { Empresa } from '@/types';
 import { Search, Plus, Edit, Trash2, Eye } from 'lucide-react';
 import Link from 'next/link';
-import toast from 'react-hot-toast';
+import { toast } from '@/lib/notifications';
 import { isSystemAdmin } from '@/lib/auth';
 import { useRouter } from 'next/navigation';
 
@@ -50,7 +50,14 @@ export default function EmpresasPage() {
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm('¿Estás seguro de eliminar esta empresa? Esta acción no se puede deshacer.')) return;
+    const { confirm } = await import('@/lib/confirm');
+    const confirmed = await confirm('¿Estás seguro de eliminar esta empresa? Esta acción no se puede deshacer.', {
+      title: 'Confirmar Eliminación',
+      type: 'danger',
+      confirmText: 'Eliminar',
+      cancelText: 'Cancelar',
+    });
+    if (!confirmed) return;
 
     try {
       await api.deleteEmpresa(id);

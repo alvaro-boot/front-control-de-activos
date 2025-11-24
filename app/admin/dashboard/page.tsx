@@ -5,7 +5,7 @@ import AdminLayout from '@/components/AdminLayout';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { api } from '@/lib/api';
 import { Building2, Users, Package, Wrench, AlertCircle, QrCode } from 'lucide-react';
-import toast from 'react-hot-toast';
+import { toast } from '@/lib/notifications';
 
 interface DashboardStats {
   indicadores: {

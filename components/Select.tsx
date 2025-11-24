@@ -14,30 +14,33 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
     return (
       <div>
         {label && (
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-gray-300 mb-2">
             {label}
-            {props.required && <span className="text-red-500 ml-1">*</span>}
+            {props.required && <span className="text-red-400 ml-1">*</span>}
           </label>
         )}
         <select
           ref={ref}
-          className={`input ${error ? 'border-red-500' : ''} ${className}`}
+          className={`input ${error ? 'border-red-500/50 focus:ring-red-500/50' : ''} ${className}`}
           {...props}
         >
           {props.placeholder && (
-            <option value="">{props.placeholder}</option>
+            <option value="" className="bg-dark-bg text-gray-400">{props.placeholder}</option>
           )}
           {options.map((option) => (
-            <option key={option.value} value={option.value}>
+            <option key={option.value} value={option.value} className="bg-dark-bg-lighter text-white">
               {option.label}
             </option>
           ))}
         </select>
         {error && (
-          <p className="mt-1 text-sm text-red-600">{error}</p>
+          <p className="mt-1 text-sm text-red-400 flex items-center">
+            <span className="mr-1">⚠️</span>
+            {error}
+          </p>
         )}
         {helperText && !error && (
-          <p className="mt-1 text-sm text-gray-500">{helperText}</p>
+          <p className="mt-1 text-sm text-gray-400">{helperText}</p>
         )}
       </div>
     );
@@ -47,4 +50,3 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
 Select.displayName = 'Select';
 
 export default Select;
-

@@ -9,7 +9,7 @@ import { api } from '@/lib/api';
 import { Empresa } from '@/types';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
-import toast from 'react-hot-toast';
+import { toast } from '@/lib/notifications';
 
 interface EmpresaForm {
   nombre: string;

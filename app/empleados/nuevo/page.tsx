@@ -9,7 +9,7 @@ import { api } from '@/lib/api';
 import { Sede, Area } from '@/types';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
-import toast from 'react-hot-toast';
+import { toast } from '@/lib/notifications';
 
 interface EmpleadoForm {
   empresaId: number;

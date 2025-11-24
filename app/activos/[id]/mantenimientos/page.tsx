@@ -8,7 +8,8 @@ import { api } from '@/lib/api';
 import { Mantenimiento } from '@/types';
 import { ArrowLeft, Plus } from 'lucide-react';
 import Link from 'next/link';
-import toast from 'react-hot-toast';
+import { toast } from '@/lib/notifications';
+import { formatCurrency } from '@/lib/currency';
 import { format } from 'date-fns';
 
 export default function MantenimientosActivoPage() {
@@ -122,9 +123,7 @@ export default function MantenimientosActivoPage() {
                         </td>
                         <td>{mant.tecnico?.nombreCompleto || 'N/A'}</td>
                         <td>
-                          {mant.costo
-                            ? `$${mant.costo.toLocaleString()}`
-                            : 'N/A'}
+                          {formatCurrency(mant.costo)}
                         </td>
                         <td className="max-w-xs truncate">
                           {mant.notas || 'Sin notas'}

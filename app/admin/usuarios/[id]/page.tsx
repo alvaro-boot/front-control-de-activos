@@ -7,7 +7,7 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import { api } from '@/lib/api';
 import { ArrowLeft, Edit, Key, Power, Building2, Shield } from 'lucide-react';
 import Link from 'next/link';
-import toast from 'react-hot-toast';
+import { toast } from '@/lib/notifications';
 
 interface Usuario {
   id: number;
