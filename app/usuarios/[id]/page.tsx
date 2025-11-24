@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Layout from '@/components/Layout';
 import ProtectedRoute from '@/components/ProtectedRoute';
@@ -16,13 +16,7 @@ export default function UsuarioDetailPage() {
   const [usuario, setUsuario] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    if (params.id) {
-      loadUsuario(Number(params.id));
-    }
-  }, [params.id]);
-
-  const loadUsuario = async (id: number) => {
+  const loadUsuario = useCallback(async (id: number) => {
     try {
       setIsLoading(true);
       const data = await api.getUsuario(id);
@@ -33,7 +27,13 @@ export default function UsuarioDetailPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [router]);
+
+  useEffect(() => {
+    if (params.id) {
+      loadUsuario(Number(params.id));
+    }
+  }, [params.id, loadUsuario]);
 
   if (isLoading) {
     return (

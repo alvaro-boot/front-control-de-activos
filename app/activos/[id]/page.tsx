@@ -176,7 +176,7 @@ export default function ActivoDetailPage() {
                       Responsable
                     </label>
                     <p className="mt-1 text-sm text-gray-900">
-                      {activo.responsable?.nombreCompleto || 'N/A'}
+                      {activo.responsable?.nombre || 'N/A'}
                     </p>
                   </div>
                   {activo.descripcion && (

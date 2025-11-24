@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import Layout from '@/components/Layout';
@@ -45,39 +45,25 @@ export default function NuevoUsuarioPage() {
 
   const empresaId = watch('empresaId');
 
-  useEffect(() => {
-    if (isAdmin) {
-      loadEmpresas();
-    }
-    loadAreas();
-    loadRoles();
-  }, [isAdmin]);
-
-  useEffect(() => {
-    if (empresaId) {
-      loadAreasByEmpresa(empresaId);
-    }
-  }, [empresaId]);
-
-  const loadEmpresas = async () => {
+  const loadEmpresas = useCallback(async () => {
     try {
       const empresasData = await api.getEmpresas();
       setEmpresas(Array.isArray(empresasData) ? empresasData : []);
     } catch (error) {
       // Ignorar error
     }
-  };
+  }, []);
 
-  const loadAreas = async () => {
+  const loadAreas = useCallback(async () => {
     try {
       const areasData = await api.getAreas();
       setAreas(Array.isArray(areasData) ? areasData : []);
     } catch (error) {
       // Ignorar error
     }
-  };
+  }, []);
 
-  const loadAreasByEmpresa = async (empresaId: number) => {
+  const loadAreasByEmpresa = useCallback(async (empresaId: number) => {
     try {
       // Cargar sedes de la empresa y luego áreas
       const sedesData = await api.getSedes(empresaId);
@@ -96,9 +82,9 @@ export default function NuevoUsuarioPage() {
     } catch (error) {
       // Ignorar error
     }
-  };
+  }, []);
 
-  const loadRoles = async () => {
+  const loadRoles = useCallback(async () => {
     try {
       const rolesData = await api.getRoles();
       // Filtrar roles según el usuario actual
@@ -129,7 +115,21 @@ export default function NuevoUsuarioPage() {
         ]);
       }
     }
-  };
+  }, [isAdmin, isAdminEmpresa]);
+
+  useEffect(() => {
+    if (isAdmin) {
+      loadEmpresas();
+    }
+    loadAreas();
+    loadRoles();
+  }, [isAdmin, loadEmpresas, loadAreas, loadRoles]);
+
+  useEffect(() => {
+    if (empresaId) {
+      loadAreasByEmpresa(empresaId);
+    }
+  }, [empresaId, loadAreasByEmpresa]);
 
   const onSubmit = async (data: UsuarioForm) => {
     setIsLoading(true);

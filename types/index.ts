@@ -85,12 +85,13 @@ export interface Activo {
   categoria?: Categoria;
   sede?: Sede;
   area?: Area;
-  responsable?: User;
+  responsable?: Empleado;
   qr?: {
     id: number;
     contenidoQr: string;
     urlImagenQr?: string;
   };
+  mantenimientos?: Mantenimiento[];
 }
 
 export interface Asignacion {

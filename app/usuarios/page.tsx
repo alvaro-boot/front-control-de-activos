@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Layout from '@/components/Layout';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { api } from '@/lib/api';
@@ -21,39 +21,16 @@ export default function UsuariosPage() {
   const [selectedEmpresaId, setSelectedEmpresaId] = useState<number | undefined>(undefined);
   const isAdmin = isSystemAdmin();
 
-  useEffect(() => {
-    if (isAdmin) {
-      loadEmpresas();
-    }
-  }, [isAdmin]);
-
-  useEffect(() => {
-    loadUsuarios();
-  }, [selectedEmpresaId]);
-
-  useEffect(() => {
-    if (searchTerm) {
-      const filtered = usuarios.filter(
-        (user) =>
-          user.nombreCompleto.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          user.correo.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setFilteredUsuarios(filtered);
-    } else {
-      setFilteredUsuarios(usuarios);
-    }
-  }, [searchTerm, usuarios]);
-
-  const loadEmpresas = async () => {
+  const loadEmpresas = useCallback(async () => {
     try {
       const data = await api.getEmpresas();
       setEmpresas(Array.isArray(data) ? data : []);
     } catch (error: any) {
       toast.error('Error al cargar empresas');
     }
-  };
+  }, []);
 
-  const loadUsuarios = async () => {
+  const loadUsuarios = useCallback(async () => {
     try {
       setIsLoading(true);
       // El backend filtra automáticamente por empresa según el usuario
@@ -74,7 +51,30 @@ export default function UsuariosPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [isAdmin, selectedEmpresaId]);
+
+  useEffect(() => {
+    if (isAdmin) {
+      loadEmpresas();
+    }
+  }, [isAdmin, loadEmpresas]);
+
+  useEffect(() => {
+    loadUsuarios();
+  }, [selectedEmpresaId, loadUsuarios]);
+
+  useEffect(() => {
+    if (searchTerm) {
+      const filtered = usuarios.filter(
+        (user) =>
+          user.nombreCompleto.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          user.correo.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredUsuarios(filtered);
+    } else {
+      setFilteredUsuarios(usuarios);
+    }
+  }, [searchTerm, usuarios]);
 
   const handleDelete = async (id: number) => {
     const { confirm } = await import('@/lib/confirm');

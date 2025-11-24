@@ -39,7 +39,7 @@ export default function ActivoQRPage() {
   const user = getStoredUser();
   const userRole = typeof user?.role === 'string' 
     ? user.role 
-    : (user?.role?.nombre || user?.rol?.nombre);
+    : user?.role?.nombre;
   const isTecnico = userRole === 'tecnico';
 
   useEffect(() => {
