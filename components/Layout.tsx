@@ -72,7 +72,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   // Filtrar navegación: solo mostrar items que corresponden al rol del usuario
   const filteredNavigation = allNavigation.filter(
-    (item) => item.roles?.includes(userRole)
+    (item) => userRole && item.roles?.includes(userRole)
   );
 
   return (

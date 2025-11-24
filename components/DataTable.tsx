@@ -75,16 +75,20 @@ export default function DataTable<T extends { id: number }>({
                     </td>
                   );
                 }
-                // Si no hay render, convertir a ReactNode
-                const value: ReactNode = 
-                  rawValue === null || rawValue === undefined 
-                    ? '' 
-                    : typeof rawValue === 'object' 
-                    ? String(rawValue)
-                    : rawValue;
+                // Si no hay render, convertir a ReactNode de forma segura
+                let displayValue: ReactNode = '';
+                if (rawValue === null || rawValue === undefined) {
+                  displayValue = '';
+                } else if (typeof rawValue === 'string' || typeof rawValue === 'number' || typeof rawValue === 'boolean') {
+                  displayValue = rawValue;
+                } else if (typeof rawValue === 'object') {
+                  displayValue = String(rawValue);
+                } else {
+                  displayValue = String(rawValue);
+                }
                 return (
                   <td key={index}>
-                    {value}
+                    {displayValue}
                   </td>
                 );
               })}

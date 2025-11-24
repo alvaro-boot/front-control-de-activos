@@ -2,15 +2,16 @@
 
 import { SelectHTMLAttributes, forwardRef } from 'react';
 
-interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
+interface SelectProps extends Omit<SelectHTMLAttributes<HTMLSelectElement>, 'placeholder'> {
   label?: string;
   error?: string;
   helperText?: string;
+  placeholder?: string;
   options: { value: string | number; label: string }[];
 }
 
 const Select = forwardRef<HTMLSelectElement, SelectProps>(
-  ({ label, error, helperText, options, className = '', ...props }, ref) => {
+  ({ label, error, helperText, options, placeholder, className = '', ...props }, ref) => {
     return (
       <div>
         {label && (
@@ -24,8 +25,8 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
           className={`input ${error ? 'border-red-500/50 focus:ring-red-500/50' : ''} ${className}`}
           {...props}
         >
-          {props.placeholder && (
-            <option value="" className="bg-dark-bg text-gray-400">{props.placeholder}</option>
+          {placeholder && (
+            <option value="" className="bg-dark-bg text-gray-400">{placeholder}</option>
           )}
           {options.map((option) => (
             <option key={option.value} value={option.value} className="bg-dark-bg-lighter text-white">
