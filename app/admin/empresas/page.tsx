@@ -212,11 +212,14 @@ export default function AdminEmpresasPage() {
           </div>
 
           <ConfirmDialog
-            open={deleteDialog.open}
+            isOpen={deleteDialog.open}
             title="Eliminar Empresa"
             message={`¿Estás seguro de que deseas eliminar la empresa "${deleteDialog.empresa?.nombre}"? Esta acción no se puede deshacer.`}
             onConfirm={handleDelete}
-            onCancel={() => setDeleteDialog({ open: false, empresa: null })}
+            onClose={() => setDeleteDialog({ open: false, empresa: null })}
+            type="danger"
+            confirmText="Eliminar"
+            cancelText="Cancelar"
           />
         </div>
       </AdminLayout>
