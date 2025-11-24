@@ -222,11 +222,14 @@ export default function AdminUsuariosPage() {
           </div>
 
           <ConfirmDialog
-            open={deleteDialog.open}
+            isOpen={deleteDialog.open}
             title="Eliminar Usuario"
             message={`¿Estás seguro de que deseas eliminar el usuario "${deleteDialog.usuario?.nombreCompleto}"? Esta acción no se puede deshacer.`}
             onConfirm={handleDelete}
-            onCancel={() => setDeleteDialog({ open: false, usuario: null })}
+            onClose={() => setDeleteDialog({ open: false, usuario: null })}
+            type="danger"
+            confirmText="Eliminar"
+            cancelText="Cancelar"
           />
 
           {/* Dialog para resetear contraseña */}
