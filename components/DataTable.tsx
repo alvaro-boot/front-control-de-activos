@@ -67,10 +67,24 @@ export default function DataTable<T extends { id: number }>({
               className={onRowClick ? 'cursor-pointer' : ''}
             >
               {columns.map((column, index) => {
-                const value = getCellValue(column, row);
+                const rawValue = getCellValue(column, row);
+                if (column.render) {
+                  return (
+                    <td key={index}>
+                      {column.render(rawValue, row)}
+                    </td>
+                  );
+                }
+                // Si no hay render, convertir a ReactNode
+                const value: ReactNode = 
+                  rawValue === null || rawValue === undefined 
+                    ? '' 
+                    : typeof rawValue === 'object' 
+                    ? String(rawValue)
+                    : rawValue;
                 return (
                   <td key={index}>
-                    {column.render ? column.render(value, row) : value}
+                    {value}
                   </td>
                 );
               })}
