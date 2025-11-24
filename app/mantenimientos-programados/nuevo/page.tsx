@@ -93,10 +93,10 @@ export default function NuevoMantenimientoProgramadoPage() {
       setSedes(Array.isArray(sedesData) ? sedesData : []);
       setCategorias(Array.isArray(categoriasData) ? categoriasData : []);
 
-      // Filtrar técnicos - verificar tanto 'role' como 'rol' (singular)
+      // Filtrar técnicos
       const tecnicosData = (Array.isArray(usuariosData) ? usuariosData : []).filter(
         (u: User) => {
-          const roleName = u.role?.nombre || u.rol?.nombre;
+          const roleName = typeof u.role === 'string' ? u.role : u.role?.nombre;
           return roleName === 'tecnico' || roleName === 'administrador' || roleName === 'administrador_sistema';
         }
       );

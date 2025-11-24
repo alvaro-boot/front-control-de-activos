@@ -32,7 +32,7 @@ export default function SolicitudesPage() {
   const user = getStoredUser();
   const userRole = typeof user?.role === 'string' 
     ? user.role 
-    : (user?.role?.nombre || user?.rol?.nombre);
+    : user?.role?.nombre;
   const isAdmin = userRole === 'administrador' || userRole === 'administrador_sistema';
 
   useEffect(() => {

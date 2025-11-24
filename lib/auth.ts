@@ -35,7 +35,7 @@ export const hasRole = (role: string): boolean => {
   // Manejar tanto objeto {nombre: "..."} como string directo (compatibilidad)
   const userRole = typeof user?.role === 'string' 
     ? user.role 
-    : (user?.role?.nombre || user?.rol?.nombre);
+    : user?.role?.nombre;
   return userRole === role;
 };
 
@@ -45,7 +45,7 @@ export const canAccess = (allowedRoles: string[]): boolean => {
   // Manejar tanto objeto {nombre: "..."} como string directo (compatibilidad)
   const userRole = typeof user?.role === 'string' 
     ? user.role 
-    : (user?.role?.nombre || user?.rol?.nombre);
+    : user?.role?.nombre;
   return allowedRoles.includes(userRole || '');
 };
 
@@ -54,7 +54,7 @@ export const isSystemAdmin = (): boolean => {
   // Manejar tanto objeto {nombre: "..."} como string directo (compatibilidad)
   const userRole = typeof user?.role === 'string' 
     ? user.role 
-    : (user?.role?.nombre || user?.rol?.nombre);
+    : user?.role?.nombre;
   return userRole === 'administrador_sistema';
 };
 

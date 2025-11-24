@@ -59,7 +59,7 @@ export default function LoginPage() {
       
       const userRole = typeof response.user.role === 'string' 
         ? response.user.role 
-        : (response.user.role?.nombre || response.user.rol?.nombre);
+        : response.user.role?.nombre;
       
       if (userRole === 'administrador_sistema') {
         router.push('/admin/dashboard');

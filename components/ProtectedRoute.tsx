@@ -31,8 +31,10 @@ export default function ProtectedRoute({
       if (userStr) {
         try {
           const user = JSON.parse(userStr);
-          // Verificar tanto 'role' como 'rol' (singular) para compatibilidad
-          const userRole = user.role?.nombre || user.rol?.nombre;
+          // Verificar el rol del usuario
+          const userRole = typeof user.role === 'string' 
+            ? user.role 
+            : user.role?.nombre;
           if (!allowedRoles.includes(userRole)) {
             router.push('/dashboard');
             return;

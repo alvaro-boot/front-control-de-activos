@@ -189,7 +189,7 @@ export default function UsuariosPage() {
                           <td>{usuario.telefono || 'N/A'}</td>
                           <td>
                             <span className="px-2 py-1 text-xs font-semibold rounded-full bg-primary-100 text-primary-800 capitalize">
-                              {usuario.role?.nombre || usuario.rol?.nombre || 'N/A'}
+                              {typeof usuario.role === 'string' ? usuario.role : usuario.role?.nombre || 'N/A'}
                             </span>
                           </td>
                           <td>

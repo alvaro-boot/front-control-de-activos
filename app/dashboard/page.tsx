@@ -30,7 +30,7 @@ export default function DashboardPage() {
     if (user) {
       const userRole = typeof user.role === 'string' 
         ? user.role 
-        : (user.role?.nombre || user.rol?.nombre);
+        : user.role?.nombre;
       
       if (userRole === 'administrador') {
         router.push('/dashboard/admin');

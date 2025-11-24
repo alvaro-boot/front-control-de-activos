@@ -175,7 +175,7 @@ export default function UsuarioDetallePage() {
                   <div className="mt-1 flex items-center">
                     <Shield className="h-4 w-4 text-gray-400 mr-2" />
                     <span className="px-2 py-1 text-xs font-semibold rounded-full bg-primary-100 text-primary-800">
-                      {usuario.rol?.nombre || 'N/A'}
+                      {typeof usuario.role === 'string' ? usuario.role : usuario.role?.nombre || 'N/A'}
                     </span>
                   </div>
                 </div>
