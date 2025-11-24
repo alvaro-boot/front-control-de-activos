@@ -457,7 +457,9 @@ class ApiClient {
   }
 
   async forgotPassword(correo: string) {
-    const response = await this.client.post('/auth/forgot-password', { correo });
+    const response = await this.client.post('/auth/forgot-password', { correo }, {
+      timeout: 30000, // 30 segundos de timeout
+    });
     return response.data;
   }
 

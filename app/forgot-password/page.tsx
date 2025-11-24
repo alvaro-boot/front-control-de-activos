@@ -42,9 +42,22 @@ export default function ForgotPasswordPage() {
       setEmailSent(true);
       toast.success('Si el correo existe, recibirás un enlace para restablecer tu contraseña');
     } catch (error: any) {
-      toast.error(
-        error.response?.data?.message || 'Error al solicitar recuperación de contraseña'
-      );
+      console.error('Error en forgotPassword:', error);
+      // Si es un error de timeout o red
+      if (error.code === 'ECONNABORTED' || error.message?.includes('timeout')) {
+        toast.error('La solicitud está tardando demasiado. Por favor, intenta de nuevo.');
+      } else if (error.response) {
+        // Error del servidor
+        toast.error(
+          error.response?.data?.message || 'Error al solicitar recuperación de contraseña'
+        );
+      } else if (error.request) {
+        // Error de red
+        toast.error('No se pudo conectar con el servidor. Verifica tu conexión a internet.');
+      } else {
+        // Otro error
+        toast.error('Error al solicitar recuperación de contraseña');
+      }
     } finally {
       setIsLoading(false);
     }
