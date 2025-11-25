@@ -113,8 +113,8 @@ export default function NuevoMantenimientoProgramadoPage() {
       // Filtrar técnicos - solo usuarios activos con roles de técnico, administrador o administrador_sistema
       const tecnicosData = (Array.isArray(usuariosData) ? usuariosData : []).filter(
         (u: User) => {
-          // Verificar que el usuario esté activo
-          if (u.activo !== 1 && u.activo !== true) {
+          // Verificar que el usuario esté activo (activo es number: 1 = activo, 0 = inactivo)
+          if (u.activo !== 1) {
             return false;
           }
           
@@ -150,7 +150,8 @@ export default function NuevoMantenimientoProgramadoPage() {
         const usuariosData = await api.getUsuarios();
         const tecnicosData = (Array.isArray(usuariosData) ? usuariosData : []).filter(
           (u: User) => {
-            if (u.activo !== 1 && u.activo !== true) return false;
+            // Verificar que el usuario esté activo (activo es number: 1 = activo, 0 = inactivo)
+            if (u.activo !== 1) return false;
             const roleName = typeof u.role === 'string' 
               ? u.role.toLowerCase() 
               : u.role?.nombre?.toLowerCase();
@@ -160,6 +161,7 @@ export default function NuevoMantenimientoProgramadoPage() {
           }
         );
         setTecnicos(tecnicosData);
+        setTecnicosFiltrados(tecnicosData);
       } catch (err) {
         console.error('Error al cargar técnicos:', err);
       }
