@@ -27,14 +27,14 @@ export default function Button({
   if (variant === 'primary') {
     return (
       <button
-        className={`w-full relative overflow-hidden group ${sizeClasses[size]} ${className} ${
+        className={`w-full sm:w-auto relative overflow-hidden group ${sizeClasses[size]} ${className} ${
           (disabled || isLoading) ? 'opacity-50 cursor-not-allowed' : ''
         }`}
         disabled={disabled || isLoading}
         {...props}
       >
         <div className="absolute inset-0 bg-gradient-to-r from-neon-blue via-neon-magenta to-neon-cyan opacity-60 group-hover:opacity-80 transition-opacity duration-300 rounded-lg" />
-        <div className="relative px-6 py-3 bg-white/70 backdrop-blur-md border border-neon-cyan/50 rounded-lg font-semibold text-gray-800 group-hover:border-neon-cyan group-hover:bg-white/90 transition-all duration-300 group-hover:shadow-lg group-hover:shadow-neon-cyan/30">
+        <div className="relative px-4 sm:px-6 py-2 sm:py-3 bg-white/70 backdrop-blur-md border border-neon-cyan/50 rounded-lg font-semibold text-sm sm:text-base text-gray-800 group-hover:border-neon-cyan group-hover:bg-white/90 transition-all duration-300 group-hover:shadow-lg group-hover:shadow-neon-cyan/30">
           {isLoading ? (
             <span className="flex items-center justify-center">
               <svg

@@ -62,18 +62,18 @@ export default function DashboardPage() {
       <Layout>
         <div className="space-y-6">
           {/* Header */}
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-neon-blue via-neon-magenta to-neon-cyan bg-clip-text text-transparent animate-gradient bg-200%">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 bg-gradient-to-r from-neon-blue via-neon-magenta to-neon-cyan bg-clip-text text-transparent animate-gradient bg-200%">
                 Dashboard
               </h1>
-              <p className="text-gray-600 text-sm">
+              <p className="text-gray-600 text-xs sm:text-sm">
                 Resumen general del sistema
               </p>
             </div>
             <div className="relative">
               <div className="absolute inset-0 bg-neon-cyan rounded-full blur-xl opacity-30 animate-glow-pulse" />
-              <Sparkles className="relative w-8 h-8 text-neon-cyan" />
+              <Sparkles className="relative w-6 h-6 sm:w-8 sm:h-8 text-neon-cyan" />
             </div>
           </div>
 
@@ -91,14 +91,14 @@ export default function DashboardPage() {
 
               {/* Activos recientes */}
               <div className="card card-glow">
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-xl font-semibold text-gray-800 flex items-center">
-                    <Package className="mr-2 h-5 w-5 text-neon-cyan" />
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-2">
+                  <h2 className="text-lg sm:text-xl font-semibold text-gray-800 flex items-center">
+                    <Package className="mr-2 h-4 w-4 sm:h-5 sm:w-5 text-neon-cyan" />
                     Activos Recientes
                   </h2>
                   <Link
                     href="/activos"
-                    className="text-sm text-neon-cyan hover:text-neon-blue transition-colors"
+                    className="text-xs sm:text-sm text-neon-cyan hover:text-neon-blue transition-colors"
                   >
                     Ver todos →
                   </Link>
@@ -108,56 +108,92 @@ export default function DashboardPage() {
                     No hay activos registrados
                   </p>
                 ) : (
-                  <div className="overflow-x-auto">
-                    <table className="table">
-                      <thead>
-                        <tr>
-                          <th>Código</th>
-                          <th>Nombre</th>
-                          <th>Estado</th>
-                          <th>Valor Actual</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {recentActivos.map((activo) => (
-                          <tr key={activo.id} className="cursor-pointer hover:bg-white/40 transition-colors">
-                            <td className="font-medium">
-                              <Link
-                                href={`/activos/${activo.id}`}
-                                className="text-neon-cyan hover:text-neon-blue transition-colors"
-                              >
-                                {activo.codigo}
-                              </Link>
-                            </td>
-                            <td>
-                              <Link
-                                href={`/activos/${activo.id}`}
-                                className="text-gray-700 hover:text-neon-cyan transition-colors"
-                              >
-                                {activo.nombre}
-                              </Link>
-                            </td>
-                            <td>
-                              <span
-                                className={`px-3 py-1 text-xs font-semibold rounded-full ${
-                                  activo.estado === 'activo'
-                                    ? 'bg-green-100/80 text-green-700 border border-green-300/50'
-                                    : activo.estado === 'mantenimiento'
-                                    ? 'bg-yellow-100/80 text-yellow-700 border border-yellow-300/50'
-                                    : 'bg-red-100/80 text-red-700 border border-red-300/50'
-                                }`}
-                              >
-                                {activo.estado}
-                              </span>
-                            </td>
-                            <td className="text-neon-cyan font-medium">
-                              {formatCurrency(activo.valorActual)}
-                            </td>
+                  <>
+                    {/* Vista de tabla para desktop */}
+                    <div className="hidden md:block overflow-x-auto">
+                      <table className="table w-full">
+                        <thead>
+                          <tr>
+                            <th>Código</th>
+                            <th>Nombre</th>
+                            <th>Estado</th>
+                            <th>Valor Actual</th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
+                        </thead>
+                        <tbody>
+                          {recentActivos.map((activo) => (
+                            <tr key={activo.id} className="cursor-pointer hover:bg-white/40 transition-colors">
+                              <td className="font-medium">
+                                <Link
+                                  href={`/activos/${activo.id}`}
+                                  className="text-neon-cyan hover:text-neon-blue transition-colors"
+                                >
+                                  {activo.codigo}
+                                </Link>
+                              </td>
+                              <td>
+                                <Link
+                                  href={`/activos/${activo.id}`}
+                                  className="text-gray-700 hover:text-neon-cyan transition-colors"
+                                >
+                                  {activo.nombre}
+                                </Link>
+                              </td>
+                              <td>
+                                <span
+                                  className={`px-3 py-1 text-xs font-semibold rounded-full ${
+                                    activo.estado === 'activo'
+                                      ? 'bg-green-100/80 text-green-700 border border-green-300/50'
+                                      : activo.estado === 'mantenimiento'
+                                      ? 'bg-yellow-100/80 text-yellow-700 border border-yellow-300/50'
+                                      : 'bg-red-100/80 text-red-700 border border-red-300/50'
+                                  }`}
+                                >
+                                  {activo.estado}
+                                </span>
+                              </td>
+                              <td className="text-neon-cyan font-medium">
+                                {formatCurrency(activo.valorActual)}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {/* Vista de cards para móvil */}
+                    <div className="md:hidden space-y-3">
+                      {recentActivos.map((activo) => (
+                        <Link
+                          key={activo.id}
+                          href={`/activos/${activo.id}`}
+                          className="block bg-white/40 backdrop-blur-sm border border-neon-blue/20 rounded-lg p-4 hover:bg-white/60 transition-all"
+                        >
+                          <div className="flex items-start justify-between mb-2">
+                            <div className="flex-1">
+                              <h3 className="font-semibold text-neon-cyan">{activo.codigo}</h3>
+                              <p className="text-gray-800 text-sm mt-1">{activo.nombre}</p>
+                            </div>
+                            <span
+                              className={`px-2 py-1 text-xs font-semibold rounded-full whitespace-nowrap ${
+                                activo.estado === 'activo'
+                                  ? 'bg-green-100/80 text-green-700 border border-green-300/50'
+                                  : activo.estado === 'mantenimiento'
+                                  ? 'bg-yellow-100/80 text-yellow-700 border border-yellow-300/50'
+                                  : 'bg-red-100/80 text-red-700 border border-red-300/50'
+                              }`}
+                            >
+                              {activo.estado}
+                            </span>
+                          </div>
+                          <div className="text-sm">
+                            <span className="text-gray-500">Valor: </span>
+                            <span className="text-neon-cyan font-medium">{formatCurrency(activo.valorActual)}</span>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  </>
                 )}
               </div>
             </>

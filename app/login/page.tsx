@@ -112,7 +112,7 @@ export default function LoginPage() {
       </div>
 
       {/* Contenedor principal */}
-      <div className="relative z-10 w-full max-w-md px-6 py-12">
+      <div className="relative z-10 w-full max-w-md px-4 sm:px-6 py-8 sm:py-12">
         {/* Logo/Icono animado */}
         <div className="text-center mb-8">
           <div className="inline-block relative">
@@ -123,10 +123,10 @@ export default function LoginPage() {
               <Sparkles className="w-10 h-10 text-neon-blue animate-glow-pulse" />
             </div>
           </div>
-          <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-neon-blue via-neon-magenta to-neon-cyan bg-clip-text text-transparent animate-gradient bg-200%">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 bg-gradient-to-r from-neon-blue via-neon-magenta to-neon-cyan bg-clip-text text-transparent animate-gradient bg-200%">
             PrismaAsset360
           </h1>
-          <p className="text-gray-400 text-sm">Sistema de Control de Activos</p>
+          <p className="text-gray-400 text-xs sm:text-sm">Sistema de Control de Activos</p>
         </div>
 
         {/* Card del formulario */}
@@ -134,8 +134,8 @@ export default function LoginPage() {
           {/* Glow effect detrás del card */}
           <div className="absolute -inset-1 bg-gradient-to-r from-neon-blue via-neon-magenta to-neon-cyan rounded-2xl blur opacity-30 animate-glow-pulse" />
           
-          <div className="relative bg-dark-bg-lighter/80 backdrop-blur-xl border border-neon-blue/30 rounded-2xl p-8 shadow-2xl">
-            <h2 className="text-2xl font-bold text-white mb-6 text-center">
+          <div className="relative bg-dark-bg-lighter/80 backdrop-blur-xl border border-neon-blue/30 rounded-2xl p-6 sm:p-8 shadow-2xl">
+            <h2 className="text-xl sm:text-2xl font-bold text-white mb-6 text-center">
               Iniciar Sesión
             </h2>
 

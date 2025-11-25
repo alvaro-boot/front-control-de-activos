@@ -47,7 +47,7 @@ body {
 }
 
 .input {
-  @apply w-full px-4 py-2 bg-white/50 backdrop-blur-md border border-neon-blue/30 rounded-lg text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-neon-cyan/50 focus:border-neon-cyan transition-all duration-300 hover:border-neon-blue/50;
+  @apply w-full px-3 sm:px-4 py-2 bg-white/50 backdrop-blur-md border border-neon-blue/30 rounded-lg text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-neon-cyan/50 focus:border-neon-cyan transition-all duration-300 hover:border-neon-blue/50;
 }
 
 .input:focus {
@@ -55,7 +55,7 @@ body {
 }
 
 .card {
-  @apply bg-white/60 backdrop-blur-xl border border-neon-blue/20 rounded-xl shadow-xl p-6;
+  @apply bg-white/60 backdrop-blur-xl border border-neon-blue/20 rounded-xl shadow-xl p-4 sm:p-6;
 }
 
 .card-glow {

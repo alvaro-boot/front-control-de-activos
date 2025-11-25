@@ -15,14 +15,14 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
     return (
       <div>
         {label && (
-          <label className="block text-sm font-medium text-gray-300 mb-2">
+          <label className="block text-xs sm:text-sm font-medium text-gray-300 mb-2">
             {label}
             {props.required && <span className="text-red-400 ml-1">*</span>}
           </label>
         )}
         <select
           ref={ref}
-          className={`input ${error ? 'border-red-500/50 focus:ring-red-500/50' : ''} ${className}`}
+          className={`input text-sm sm:text-base ${error ? 'border-red-500/50 focus:ring-red-500/50' : ''} ${className}`}
           {...props}
         >
           {placeholder && (

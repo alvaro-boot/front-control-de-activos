@@ -119,39 +119,39 @@ export default function ActivosPage() {
       <Layout>
         <div className="space-y-6">
           {/* Header */}
-          <div className="flex justify-between items-center">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
             <div>
-              <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-neon-blue via-neon-magenta to-neon-cyan bg-clip-text text-transparent animate-gradient bg-200% flex items-center">
-                <Package className="mr-3 h-8 w-8 text-neon-cyan" />
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 bg-gradient-to-r from-neon-blue via-neon-magenta to-neon-cyan bg-clip-text text-transparent animate-gradient bg-200% flex items-center">
+                <Package className="mr-2 sm:mr-3 h-6 w-6 sm:h-8 sm:w-8 text-neon-cyan" />
                 Activos
               </h1>
-              <p className="text-gray-400 text-sm">
+              <p className="text-gray-400 text-xs sm:text-sm">
                 Gestión de activos del sistema
               </p>
             </div>
             <Link
               href="/activos/nuevo"
-              className="relative overflow-hidden group"
+              className="relative overflow-hidden group w-full sm:w-auto"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-neon-blue via-neon-magenta to-neon-cyan opacity-75 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="relative px-6 py-3 bg-dark-bg-lighter/50 backdrop-blur-sm border border-neon-cyan/50 rounded-lg font-semibold text-white group-hover:border-neon-cyan transition-all duration-300 group-hover:shadow-lg group-hover:shadow-neon-cyan/50 flex items-center">
-                <Plus className="mr-2 h-5 w-5" />
-                Nuevo Activo
+              <div className="relative px-4 sm:px-6 py-2 sm:py-3 bg-dark-bg-lighter/50 backdrop-blur-sm border border-neon-cyan/50 rounded-lg font-semibold text-white group-hover:border-neon-cyan transition-all duration-300 group-hover:shadow-lg group-hover:shadow-neon-cyan/50 flex items-center justify-center">
+                <Plus className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+                <span className="text-sm sm:text-base">Nuevo Activo</span>
               </div>
             </Link>
           </div>
 
           {/* Filtros */}
-          <div className="card card-glow">
+          <div className="card card-glow space-y-4">
             {isAdmin && (
-              <div className="mb-4">
+              <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
                   Filtrar por Empresa
                 </label>
                 <select
                   value={selectedEmpresaId || ''}
                   onChange={(e) => setSelectedEmpresaId(e.target.value ? Number(e.target.value) : undefined)}
-                  className="input"
+                  className="input w-full"
                 >
                   <option value="" className="bg-dark-bg text-gray-400">Todas las empresas</option>
                   {empresas.map((empresa) => (
@@ -169,7 +169,7 @@ export default function ActivosPage() {
                 placeholder="Buscar por código o nombre..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="input pl-10"
+                className="input pl-10 w-full"
               />
             </div>
           </div>
@@ -189,82 +189,146 @@ export default function ActivosPage() {
                   No hay activos registrados
                 </p>
               ) : (
-                <div className="overflow-x-auto">
-                  <table className="table">
-                    <thead>
-                      <tr>
-                        <th>Código</th>
-                        <th>Nombre</th>
-                        <th>Categoría</th>
-                        <th>Estado</th>
-                        <th>Valor Actual</th>
-                        <th>Acciones</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filteredActivos.map((activo) => (
-                        <tr key={activo.id} className="hover:bg-dark-bg/50 transition-colors">
-                          <td className="font-medium text-neon-cyan">{activo.codigo}</td>
-                          <td className="text-gray-300">{activo.nombre}</td>
-                          <td className="text-gray-400">{activo.categoria?.nombre || 'N/A'}</td>
-                          <td>
-                            <span
-                              className={`px-3 py-1 text-xs font-semibold rounded-full ${getEstadoColor(
-                                activo.estado
-                              )}`}
-                            >
-                              {activo.estado}
-                            </span>
-                          </td>
-                          <td className="text-neon-cyan font-medium">
-                            {formatCurrency(activo.valorActual)}
-                          </td>
-                          <td>
-                            <div className="flex items-center space-x-3">
-                              <Link
-                                href={`/activos/${activo.id}`}
-                                className="text-neon-cyan hover:text-neon-blue transition-colors"
-                                title="Ver detalles"
-                              >
-                                <Eye className="h-5 w-5" />
-                              </Link>
-                              <Link
-                                href={`/activos/${activo.id}/historial`}
-                                className="text-neon-magenta hover:text-pink-400 transition-colors"
-                                title="Ver historial"
-                              >
-                                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                              </Link>
-                              <Link
-                                href={`/activos/${activo.id}/editar`}
-                                className="text-neon-blue hover:text-blue-400 transition-colors"
-                                title="Editar"
-                              >
-                                <Edit className="h-5 w-5" />
-                              </Link>
-                              <button
-                                onClick={() => handleRegenerateQR(activo.id)}
-                                className="text-neon-magenta hover:text-pink-400 transition-colors"
-                                title="Regenerar QR"
-                              >
-                                <QrCode className="h-5 w-5" />
-                              </button>
-                              <button
-                                onClick={() => handleDelete(activo.id)}
-                                className="text-red-400 hover:text-red-300 transition-colors"
-                                title="Eliminar"
-                              >
-                                <Trash2 className="h-5 w-5" />
-                              </button>
-                            </div>
-                          </td>
+                <>
+                  {/* Vista de tabla para desktop */}
+                  <div className="hidden md:block overflow-x-auto">
+                    <table className="table w-full">
+                      <thead>
+                        <tr>
+                          <th>Código</th>
+                          <th>Nombre</th>
+                          <th>Categoría</th>
+                          <th>Estado</th>
+                          <th>Valor Actual</th>
+                          <th>Acciones</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                      </thead>
+                      <tbody>
+                        {filteredActivos.map((activo) => (
+                          <tr key={activo.id} className="hover:bg-dark-bg/50 transition-colors">
+                            <td className="font-medium text-neon-cyan">{activo.codigo}</td>
+                            <td className="text-gray-300">{activo.nombre}</td>
+                            <td className="text-gray-400">{activo.categoria?.nombre || 'N/A'}</td>
+                            <td>
+                              <span
+                                className={`px-3 py-1 text-xs font-semibold rounded-full ${getEstadoColor(
+                                  activo.estado
+                                )}`}
+                              >
+                                {activo.estado}
+                              </span>
+                            </td>
+                            <td className="text-neon-cyan font-medium">
+                              {formatCurrency(activo.valorActual)}
+                            </td>
+                            <td>
+                              <div className="flex items-center space-x-3">
+                                <Link
+                                  href={`/activos/${activo.id}`}
+                                  className="text-neon-cyan hover:text-neon-blue transition-colors"
+                                  title="Ver detalles"
+                                >
+                                  <Eye className="h-5 w-5" />
+                                </Link>
+                                <Link
+                                  href={`/activos/${activo.id}/historial`}
+                                  className="text-neon-magenta hover:text-pink-400 transition-colors"
+                                  title="Ver historial"
+                                >
+                                  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                  </svg>
+                                </Link>
+                                <Link
+                                  href={`/activos/${activo.id}/editar`}
+                                  className="text-neon-blue hover:text-blue-400 transition-colors"
+                                  title="Editar"
+                                >
+                                  <Edit className="h-5 w-5" />
+                                </Link>
+                                <button
+                                  onClick={() => handleRegenerateQR(activo.id)}
+                                  className="text-neon-magenta hover:text-pink-400 transition-colors"
+                                  title="Regenerar QR"
+                                >
+                                  <QrCode className="h-5 w-5" />
+                                </button>
+                                <button
+                                  onClick={() => handleDelete(activo.id)}
+                                  className="text-red-400 hover:text-red-300 transition-colors"
+                                  title="Eliminar"
+                                >
+                                  <Trash2 className="h-5 w-5" />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Vista de cards para móvil */}
+                  <div className="md:hidden space-y-4">
+                    {filteredActivos.map((activo) => (
+                      <div key={activo.id} className="bg-white/40 backdrop-blur-sm border border-neon-blue/20 rounded-lg p-4 space-y-3">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <h3 className="font-semibold text-neon-cyan text-lg">{activo.codigo}</h3>
+                            <p className="text-gray-800 mt-1">{activo.nombre}</p>
+                          </div>
+                          <span
+                            className={`px-2 py-1 text-xs font-semibold rounded-full whitespace-nowrap ${getEstadoColor(
+                              activo.estado
+                            )}`}
+                          >
+                            {activo.estado}
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-3 text-sm">
+                          <div>
+                            <span className="text-gray-500 block">Categoría</span>
+                            <span className="text-gray-800">{activo.categoria?.nombre || 'N/A'}</span>
+                          </div>
+                          <div>
+                            <span className="text-gray-500 block">Valor Actual</span>
+                            <span className="text-neon-cyan font-medium">{formatCurrency(activo.valorActual)}</span>
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-between pt-2 border-t border-neon-blue/20">
+                          <Link
+                            href={`/activos/${activo.id}`}
+                            className="flex items-center text-neon-cyan hover:text-neon-blue transition-colors text-sm"
+                          >
+                            <Eye className="h-4 w-4 mr-1" />
+                            Ver
+                          </Link>
+                          <Link
+                            href={`/activos/${activo.id}/editar`}
+                            className="flex items-center text-neon-blue hover:text-blue-400 transition-colors text-sm"
+                          >
+                            <Edit className="h-4 w-4 mr-1" />
+                            Editar
+                          </Link>
+                          <button
+                            onClick={() => handleRegenerateQR(activo.id)}
+                            className="flex items-center text-neon-magenta hover:text-pink-400 transition-colors text-sm"
+                          >
+                            <QrCode className="h-4 w-4 mr-1" />
+                            QR
+                          </button>
+                          <button
+                            onClick={() => handleDelete(activo.id)}
+                            className="flex items-center text-red-400 hover:text-red-300 transition-colors text-sm"
+                          >
+                            <Trash2 className="h-4 w-4 mr-1" />
+                            Eliminar
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </>
               )}
             </div>
           )}
