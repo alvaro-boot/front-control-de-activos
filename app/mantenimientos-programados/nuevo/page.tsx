@@ -118,10 +118,12 @@ export default function NuevoMantenimientoProgramadoPage() {
             return false;
           }
           
-          // Obtener el nombre del rol
-          const roleName = typeof u.role === 'string' 
-            ? u.role.toLowerCase() 
-            : u.role?.nombre?.toLowerCase();
+          // Obtener el nombre del rol (role es un objeto con { id, nombre })
+          const roleName = u.role?.nombre?.toLowerCase();
+          
+          if (!roleName) {
+            return false;
+          }
           
           // Filtrar por roles que pueden realizar mantenimientos
           return roleName === 'tecnico' || 
@@ -152,9 +154,14 @@ export default function NuevoMantenimientoProgramadoPage() {
           (u: User) => {
             // Verificar que el usuario esté activo (activo es number: 1 = activo, 0 = inactivo)
             if (u.activo !== 1) return false;
-            const roleName = typeof u.role === 'string' 
-              ? u.role.toLowerCase() 
-              : u.role?.nombre?.toLowerCase();
+            
+            // Obtener el nombre del rol (role es un objeto con { id, nombre })
+            const roleName = u.role?.nombre?.toLowerCase();
+            
+            if (!roleName) {
+              return false;
+            }
+            
             return roleName === 'tecnico' || 
                    roleName === 'administrador' || 
                    roleName === 'administrador_sistema';
