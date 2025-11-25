@@ -37,6 +37,13 @@ export default function UsuariosPage() {
       const data = await api.getUsuarios();
       let usuariosData = Array.isArray(data) ? data : [];
       
+      // Log para depuración
+      console.log('Usuarios cargados:', usuariosData);
+      if (usuariosData.length > 0) {
+        console.log('Primer usuario:', usuariosData[0]);
+        console.log('Rol del primer usuario:', usuariosData[0].role);
+      }
+      
       // Si es admin y seleccionó una empresa, filtrar en el frontend
       if (isAdmin && selectedEmpresaId) {
         usuariosData = usuariosData.filter(
@@ -47,6 +54,7 @@ export default function UsuariosPage() {
       setUsuarios(usuariosData);
       setFilteredUsuarios(usuariosData);
     } catch (error: any) {
+      console.error('Error al cargar usuarios:', error);
       toast.error('Error al cargar usuarios');
     } finally {
       setIsLoading(false);
