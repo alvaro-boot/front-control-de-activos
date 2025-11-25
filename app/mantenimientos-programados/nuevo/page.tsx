@@ -32,6 +32,7 @@ export default function NuevoMantenimientoProgramadoPage() {
   const [sedes, setSedes] = useState<Sede[]>([]);
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [tecnicos, setTecnicos] = useState<User[]>([]);
+  const [tecnicosFiltrados, setTecnicosFiltrados] = useState<User[]>([]);
   const [empresas, setEmpresas] = useState<Empresa[]>([]);
   const [activosCount, setActivosCount] = useState(0);
   const [tareas, setTareas] = useState<string[]>([]);
@@ -65,6 +66,22 @@ export default function NuevoMantenimientoProgramadoPage() {
       loadCategorias(Number(empresaId));
     }
   }, [empresaId]);
+
+  // Filtrar técnicos por empresa cuando cambia la empresa seleccionada
+  useEffect(() => {
+    if (modo === 'masivo' && empresaId) {
+      // Filtrar técnicos por la empresa seleccionada
+      const tecnicosEmpresa = tecnicos.filter((t: User) => {
+        // Manejar tanto si empresa es un objeto como si solo tenemos empresaId
+        const empresaIdTecnico = t.empresa?.id || t.empresaId;
+        return empresaIdTecnico === Number(empresaId);
+      });
+      setTecnicosFiltrados(tecnicosEmpresa);
+    } else {
+      // En modo individual o sin empresa seleccionada, mostrar todos los técnicos disponibles
+      setTecnicosFiltrados(tecnicos);
+    }
+  }, [empresaId, modo, tecnicos]);
 
   useEffect(() => {
     if (modo === 'masivo' && (empresaId || sedeId || categoriaId)) {
@@ -376,8 +393,8 @@ export default function NuevoMantenimientoProgramadoPage() {
                   defaultValue=""
                 >
                   <option value="">Sin asignar</option>
-                  {tecnicos.length > 0 ? (
-                    tecnicos.map((tecnico) => (
+                  {tecnicosFiltrados.length > 0 ? (
+                    tecnicosFiltrados.map((tecnico) => (
                       <option key={tecnico.id} value={tecnico.id}>
                         {tecnico.nombreCompleto}
                       </option>
@@ -388,6 +405,13 @@ export default function NuevoMantenimientoProgramadoPage() {
                     </option>
                   )}
                 </select>
+                {tecnicosFiltrados.length === 0 && tecnicos.length > 0 && (
+                  <p className="mt-1 text-xs text-gray-500">
+                    {modo === 'masivo' && empresaId
+                      ? 'No hay técnicos en la empresa seleccionada'
+                      : 'No hay técnicos registrados en el sistema'}
+                  </p>
+                )}
                 {tecnicos.length === 0 && (
                   <p className="mt-1 text-xs text-gray-500">
                     No hay técnicos registrados en el sistema
