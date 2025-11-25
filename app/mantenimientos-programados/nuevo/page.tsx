@@ -355,16 +355,44 @@ export default function NuevoMantenimientoProgramadoPage() {
                   Técnico (opcional)
                 </label>
                 <select
-                  {...register('tecnicoId', { valueAsNumber: true })}
-                  className="input"
+                  {...register('tecnicoId', {
+                    setValueAs: (value) => {
+                      if (value === '' || value === null || value === undefined) {
+                        return undefined;
+                      }
+                      const numValue = Number(value);
+                      return isNaN(numValue) ? undefined : numValue;
+                    },
+                  })}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (value === '') {
+                      setValue('tecnicoId', undefined);
+                    } else {
+                      setValue('tecnicoId', Number(value));
+                    }
+                  }}
+                  className="input w-full"
+                  defaultValue=""
                 >
                   <option value="">Sin asignar</option>
-                  {tecnicos.map((tecnico) => (
-                    <option key={tecnico.id} value={tecnico.id}>
-                      {tecnico.nombreCompleto}
+                  {tecnicos.length > 0 ? (
+                    tecnicos.map((tecnico) => (
+                      <option key={tecnico.id} value={tecnico.id}>
+                        {tecnico.nombreCompleto}
+                      </option>
+                    ))
+                  ) : (
+                    <option value="" disabled>
+                      No hay técnicos disponibles
                     </option>
-                  ))}
+                  )}
                 </select>
+                {tecnicos.length === 0 && (
+                  <p className="mt-1 text-xs text-gray-500">
+                    No hay técnicos registrados en el sistema
+                  </p>
+                )}
               </div>
 
               <div>
