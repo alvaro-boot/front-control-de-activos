@@ -110,21 +110,59 @@ export default function NuevoMantenimientoProgramadoPage() {
       setSedes(Array.isArray(sedesData) ? sedesData : []);
       setCategorias(Array.isArray(categoriasData) ? categoriasData : []);
 
-      // Filtrar técnicos
+      // Filtrar técnicos - solo usuarios activos con roles de técnico, administrador o administrador_sistema
       const tecnicosData = (Array.isArray(usuariosData) ? usuariosData : []).filter(
         (u: User) => {
-          const roleName = typeof u.role === 'string' ? u.role : u.role?.nombre;
-          return roleName === 'tecnico' || roleName === 'administrador' || roleName === 'administrador_sistema';
+          // Verificar que el usuario esté activo
+          if (u.activo !== 1 && u.activo !== true) {
+            return false;
+          }
+          
+          // Obtener el nombre del rol
+          const roleName = typeof u.role === 'string' 
+            ? u.role.toLowerCase() 
+            : u.role?.nombre?.toLowerCase();
+          
+          // Filtrar por roles que pueden realizar mantenimientos
+          return roleName === 'tecnico' || 
+                 roleName === 'administrador' || 
+                 roleName === 'administrador_sistema';
         }
       );
+      
+      console.log('Usuarios cargados:', usuariosData);
+      console.log('Técnicos filtrados:', tecnicosData);
+      
       setTecnicos(tecnicosData);
+      // Inicializar técnicos filtrados con todos los técnicos
+      setTecnicosFiltrados(tecnicosData);
 
       // Setear empresaId por defecto solo si no es admin del sistema
       if (!isAdmin) {
         setValue('empresaId', empresaIdUser);
       }
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Error al cargar datos:', error);
       toast.error('Error al cargar datos');
+      
+      // Intentar cargar técnicos de todas formas si hay un error parcial
+      try {
+        const usuariosData = await api.getUsuarios();
+        const tecnicosData = (Array.isArray(usuariosData) ? usuariosData : []).filter(
+          (u: User) => {
+            if (u.activo !== 1 && u.activo !== true) return false;
+            const roleName = typeof u.role === 'string' 
+              ? u.role.toLowerCase() 
+              : u.role?.nombre?.toLowerCase();
+            return roleName === 'tecnico' || 
+                   roleName === 'administrador' || 
+                   roleName === 'administrador_sistema';
+          }
+        );
+        setTecnicos(tecnicosData);
+      } catch (err) {
+        console.error('Error al cargar técnicos:', err);
+      }
     }
   };
 
@@ -406,15 +444,15 @@ export default function NuevoMantenimientoProgramadoPage() {
                   )}
                 </select>
                 {tecnicosFiltrados.length === 0 && tecnicos.length > 0 && (
-                  <p className="mt-1 text-xs text-gray-500">
+                  <p className="mt-1 text-xs text-amber-600">
                     {modo === 'masivo' && empresaId
-                      ? 'No hay técnicos en la empresa seleccionada'
-                      : 'No hay técnicos registrados en el sistema'}
+                      ? `No hay técnicos activos en la empresa seleccionada (${tecnicos.length} técnicos en total)`
+                      : 'No hay técnicos disponibles con los filtros actuales'}
                   </p>
                 )}
                 {tecnicos.length === 0 && (
-                  <p className="mt-1 text-xs text-gray-500">
-                    No hay técnicos registrados en el sistema
+                  <p className="mt-1 text-xs text-amber-600">
+                    No hay técnicos registrados y activos en el sistema. Asegúrate de que existan usuarios con rol "técnico", "administrador" o "administrador_sistema" y que estén activos.
                   </p>
                 )}
               </div>
