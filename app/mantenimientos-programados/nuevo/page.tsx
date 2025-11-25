@@ -452,7 +452,7 @@ export default function NuevoMantenimientoProgramadoPage() {
                 )}
                 {tecnicos.length === 0 && (
                   <p className="mt-1 text-xs text-amber-600">
-                    No hay técnicos registrados y activos en el sistema. Asegúrate de que existan usuarios con rol "técnico", "administrador" o "administrador_sistema" y que estén activos.
+                    No hay técnicos registrados y activos en el sistema. Asegúrate de que existan usuarios con rol &quot;técnico&quot;, &quot;administrador&quot; o &quot;administrador_sistema&quot; y que estén activos.
                   </p>
                 )}
               </div>
